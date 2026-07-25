@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "date": "2026-07-25",
   "meals": [
     {"type":"早餐","name":"豆腐脑一碗","kcal":120,"protein":8,"carb":10,"fat":5},
@@ -11,12 +11,13 @@
     {"type":"晚餐","name":"油条半根","kcal":110,"protein":2,"carb":12,"fat":6},
     {"type":"晚餐","name":"冬瓜炒肉","kcal":180,"protein":12,"carb":6,"fat":12},
     {"type":"晚餐","name":"葱花饼一牙","kcal":160,"protein":3,"carb":22,"fat":6},
-    {"type":"晚餐","name":"葱花饼夹炒辣椒","kcal":40,"protein":1,"carb":3,"fat":3}
+    {"type":"晚餐","name":"葱花饼夹炒辣椒","kcal":40,"protein":1,"carb":3,"fat":3},
+    {"type":"加餐","name":"光明如实奇亚籽酸奶（135g）","kcal":108,"protein":5.5,"carb":7.4,"fat":6.2}
   ],
   "workouts": [
     {"type":"骑行","name":"骑行 15.3km","min":43,"kcal":284},
     {"type":"力量训练","name":"臀腿训练","min":20,"kcal":88}
   ],
   "weight": null,
-  "note": "2026-07-25 今天的饮食和锻炼"
+  "note": "2026-07-25 增加1杯如实奇亚籽酸奶"
 }
