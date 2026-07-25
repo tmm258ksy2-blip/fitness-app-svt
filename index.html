@@ -390,6 +390,19 @@
   .setting-row:last-child{border-bottom:none;}
   .setting-row .key{font-size:14px;color:var(--text);font-weight:600;}
   .setting-row .val{font-size:13px;color:var(--text-soft);}
+  /* 记录总量统计条 */
+  .summary-bar{
+    display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px;padding:10px 12px;
+    border-radius:12px;background:linear-gradient(135deg,rgba(255,138,171,0.12),rgba(166,210,236,0.12));
+    border:1px solid rgba(255,255,255,0.6);
+  }
+  .summary-bar .s-item{flex:1;min-width:60px;text-align:center;}
+  .summary-bar .s-item.s-wide{flex-basis:100%;}
+  .summary-bar .s-val{display:block;font-size:18px;font-weight:800;color:var(--pink-4);}
+  .summary-bar .s-val small{font-size:11px;font-weight:600;color:var(--text-soft);margin-left:2px;}
+  .summary-bar .s-val-sm{display:block;font-size:12px;font-weight:700;color:var(--blue-3);line-height:1.4;}
+  .summary-bar .s-lbl{display:block;font-size:10px;color:var(--text-soft);margin-top:2px;}
+
   .toast{
     position:fixed;top:calc(env(safe-area-inset-top, 0px) + 60px);left:50%;transform:translateX(-50%);
     background:rgba(60,40,55,0.88);color:#fff;padding:11px 20px;border-radius:22px;
@@ -497,6 +510,7 @@
     </div>
     <div class="card">
       <h3><span class="dot"></span><span id="mealTitle">今日饮食</span></h3>
+      <div id="mealSummary"></div>
       <div id="mealList"></div>
       <button class="btn" style="margin-top:10px;" data-act="add-meal">+ 添加一餐</button>
     </div>
@@ -515,6 +529,7 @@
     </div>
     <div class="card">
       <h3><span class="dot"></span><span id="workoutTitle">今日运动</span></h3>
+      <div id="workoutSummary"></div>
       <div id="workoutList"></div>
       <button class="btn" style="margin-top:10px;" data-act="add-workout">+ 添加运动</button>
     </div>
@@ -1642,19 +1657,47 @@ function renderList(which){
   const days = isWeek ? weekDates() : [resolveDay(currentDay[which])];
   const list = which==='meal' ? 'mealList' : 'workoutList';
   const title = which==='meal' ? 'mealTitle' : 'workoutTitle';
-  document.getElementById(title).textContent =
-    currentDay[which]==='today' ? '今日饮食' :
-    currentDay[which]==='yesterday' ? '昨日饮食' : '本周饮食';
+  const summaryEl = document.getElementById(which+'Summary');
+  const rangeLabel = currentDay[which]==='today' ? '今日' : currentDay[which]==='yesterday' ? '昨日' : '本周';
+  document.getElementById(title).textContent = rangeLabel + '饮食';
   if(which==='workout'){
-    document.getElementById(title).textContent =
-      currentDay[which]==='today' ? '今日运动' :
-      currentDay[which]==='yesterday' ? '昨日运动' : '本周运动';
+    document.getElementById(title).textContent = rangeLabel + '运动';
   }
   let items = [];
   days.forEach(d=>{
     (state[which+'s'][d]||[]).forEach(it=>items.push({...it, _d:d}));
   });
   items.sort((a,b)=>b.ts-a.ts);
+
+  // 渲染总量统计
+  if(items.length){
+    if(which==='meal'){
+      const totalKcal = items.reduce((s,it)=>s+(+it.kcal||0),0);
+      const totalProtein = items.reduce((s,it)=>s+(+it.protein||0),0);
+      const totalCarb = items.reduce((s,it)=>s+(+it.carb||0),0);
+      const totalFat = items.reduce((s,it)=>s+(+it.fat||0),0);
+      summaryEl.innerHTML = `<div class="summary-bar">
+        <div class="s-item"><span class="s-val">${totalKcal}</span><span class="s-lbl">总热量 kcal</span></div>
+        <div class="s-item"><span class="s-val">${totalProtein}<small>g</small></span><span class="s-lbl">蛋白质</span></div>
+        <div class="s-item"><span class="s-val">${totalCarb}<small>g</small></span><span class="s-lbl">碳水</span></div>
+        <div class="s-item"><span class="s-val">${totalFat}<small>g</small></span><span class="s-lbl">脂肪</span></div>
+      </div>`;
+    } else {
+      const totalMin = items.reduce((s,it)=>s+(+it.min||0),0);
+      const totalKcal = items.reduce((s,it)=>s+(+it.kcal||0),0);
+      const types = {};
+      items.forEach(it=>{ types[it.type] = (types[it.type]||0) + 1; });
+      const typeStr = Object.entries(types).map(([t,c])=>`${t}×${c}`).join(' · ');
+      summaryEl.innerHTML = `<div class="summary-bar">
+        <div class="s-item"><span class="s-val">${totalMin}<small>min</small></span><span class="s-lbl">总时长</span></div>
+        <div class="s-item"><span class="s-val">${totalKcal}</span><span class="s-lbl">总消耗 kcal</span></div>
+        <div class="s-item s-wide"><span class="s-val-sm">${typeStr||'-'}</span><span class="s-lbl">运动类型</span></div>
+      </div>`;
+    }
+  } else {
+    summaryEl.innerHTML = '';
+  }
+
   const el = document.getElementById(list);
   if(!items.length){ el.innerHTML='<div class="list-empty">还没有记录～</div>'; return; }
   el.innerHTML = items.map(it=>{

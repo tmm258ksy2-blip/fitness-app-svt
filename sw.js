@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitSVT-v20';
+const CACHE_NAME = 'fitSVT-v21';
 
 // 安装时跳过等待，立即激活
 self.addEventListener('install', event => {
