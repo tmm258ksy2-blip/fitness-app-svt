@@ -495,14 +495,14 @@
       <button data-d="yesterday">昨天</button>
       <button data-d="week">本周</button>
     </div>
-    <div class="card" id="mealPlanCard">
-      <h3><span class="dot"></span>今日推荐饮食</h3>
-      <div id="mealPlanContent"></div>
-    </div>
     <div class="card">
       <h3><span class="dot"></span><span id="mealTitle">今日饮食</span></h3>
       <div id="mealList"></div>
       <button class="btn" style="margin-top:10px;" data-act="add-meal">+ 添加一餐</button>
+    </div>
+    <div class="card" id="mealPlanCard">
+      <h3><span class="dot"></span>今日推荐饮食</h3>
+      <div id="mealPlanContent"></div>
     </div>
   </section>
 
@@ -513,14 +513,14 @@
       <button data-d="yesterday">昨天</button>
       <button data-d="week">本周</button>
     </div>
-    <div class="card" id="workoutPlanCard">
-      <h3><span class="dot"></span>今日推荐锻炼</h3>
-      <div id="workoutPlanContent"></div>
-    </div>
     <div class="card">
       <h3><span class="dot"></span><span id="workoutTitle">今日运动</span></h3>
       <div id="workoutList"></div>
       <button class="btn" style="margin-top:10px;" data-act="add-workout">+ 添加运动</button>
+    </div>
+    <div class="card" id="workoutPlanCard">
+      <h3><span class="dot"></span>今日推荐锻炼</h3>
+      <div id="workoutPlanContent"></div>
     </div>
   </section>
 
@@ -827,6 +827,7 @@ const WORKOUT_PLANS = {
   1: { // 周一
     title:'腿部拉伸舒缓', icon:'🦵', duration:'8 分钟', tag:'舒缓',
     type:'瑜伽', min:8, kcal:32,
+    video:'BV1mkg16qEzW', videoTitle:'14组晨间舒展拉伸跟练',
     items:[
       {name:'猫牛式', detail:'跪姿交替弓背塌腰 ×15'},
       {name:'下犬式', detail:'保持 30 秒 ×2'},
@@ -838,6 +839,7 @@ const WORKOUT_PLANS = {
   2: { // 周二
     title:'腰背舒缓', icon:'🌿', duration:'8 分钟', tag:'舒缓',
     type:'瑜伽', min:8, kcal:32,
+    video:'BV1mkg16qEzW', videoTitle:'14组晨间舒展拉伸跟练',
     items:[
       {name:'猫牛式', detail:'跪姿交替弓背塌腰 ×15'},
       {name:'婴儿式', detail:'跪趴前伸保持 45 秒'},
@@ -849,6 +851,7 @@ const WORKOUT_PLANS = {
   3: { // 周三
     title:'肩颈放松', icon:'💆', duration:'8 分钟', tag:'舒缓',
     type:'瑜伽', min:8, kcal:32,
+    video:'BV1VhMg63E2K', videoTitle:'帕梅拉肩颈放松改善圆肩',
     items:[
       {name:'颈部环绕', detail:'顺时针逆时针各 10 圈'},
       {name:'肩部环绕', detail:'前后各 15 圈'},
@@ -860,6 +863,7 @@ const WORKOUT_PLANS = {
   4: { // 周四
     title:'臀腿强化 + 有氧', icon:'🍑', duration:'35 分钟', tag:'强化',
     type:'力量训练', min:35, kcal:200,
+    video:'BV1yGKF6dES9', videoTitle:'居家臀腿训练无器械跟练',
     items:[
       {name:'深蹲', detail:'15 次 ×4 组'},
       {name:'弓步蹲', detail:'左右各 12 次 ×3 组'},
@@ -871,6 +875,7 @@ const WORKOUT_PLANS = {
   5: { // 周五
     title:'肩背强化 + 有氧', icon:'💪', duration:'35 分钟', tag:'强化',
     type:'力量训练', min:35, kcal:210,
+    video:'BV1vu411e7fC', videoTitle:'10分钟缓解肩颈酸痛',
     items:[
       {name:'跪姿俯卧撑', detail:'12 次 ×4 组'},
       {name:'哑铃划船', detail:'15 次 ×4 组'},
@@ -882,6 +887,7 @@ const WORKOUT_PLANS = {
   6: { // 周六
     title:'腰腹核心 + 有氧', icon:'🔥', duration:'35 分钟', tag:'强化',
     type:'力量训练', min:35, kcal:195,
+    video:'BV1YN8wzXEt8', videoTitle:'帕梅拉10分钟燃腹训练',
     items:[
       {name:'卷腹', detail:'20 次 ×4 组'},
       {name:'死虫式', detail:'左右各 12 次 ×3 组'},
@@ -893,6 +899,7 @@ const WORKOUT_PLANS = {
   0: { // 周日
     title:'全身循环 + 有氧', icon:'✨', duration:'40 分钟', tag:'强化',
     type:'力量训练', min:40, kcal:240,
+    video:'BV1Xt421J7yW', videoTitle:'20分钟居家HIIT全身燃脂',
     items:[
       {name:'深蹲', detail:'15 次 ×3 组'},
       {name:'跪姿俯卧撑', detail:'12 次 ×3 组'},
@@ -1529,8 +1536,25 @@ function renderWorkoutPlan(){
         </div>
       </div>
     `).join('')}
-    <button class="btn" id="logWorkoutPlan" style="margin-top:12px;">✅ 一键记录今日锻炼</button>
+    ${plan.video ? `
+      <button class="btn" id="playWorkoutVideo" style="margin-top:12px;background:linear-gradient(135deg,var(--blue-3),var(--blue-2));">
+        ▶ 跟练视频：${plan.videoTitle}
+      </button>
+    ` : ''}
+    <button class="btn" id="logWorkoutPlan" style="margin-top:8px;">✅ 一键记录今日锻炼</button>
   `;
+  if(plan.video){
+    document.getElementById('playWorkoutVideo').onclick = ()=>{
+      // 复用 B 站内嵌播放器
+      const iframe = document.getElementById('ytIframe');
+      iframe.src = `https://player.bilibili.com/player.html?bvid=${plan.video}&page=1&autoplay=1&high_quality=1&danmaku=0`;
+      document.getElementById('ytTitle').textContent = '🏋️ ' + plan.videoTitle;
+      document.getElementById('ytPlayer').classList.add('show');
+      document.getElementById('ytPlayer').classList.add('expanded');
+      document.getElementById('ytToggle').textContent = '⤡';
+      document.querySelector('.tabbar').scrollIntoView({behavior:'smooth'});
+    };
+  }
   document.getElementById('logWorkoutPlan').onclick = ()=>{
     const t = today();
     state.workouts[t] = state.workouts[t] || [];
@@ -2194,19 +2218,21 @@ function openAvatarInput(idx){
 }
 function renderAvatar(){
   const el = document.getElementById('avatar');
-  const arr = (state.avatars||[]).filter(a=>a && a.src);
-  if(arr.length === 0){
+  const all = (state.avatars||[]);
+  const filled = all.filter(a=>a && a.src);
+  if(filled.length === 0){
+    // 没上传任何头像，用默认团体图
     el.style.backgroundImage = 'url("assets/svt.jpg")';
-  } else {
-    // 每次打开随机选一个，存到 sessionStorage 避免同会话内频繁跳变
-    let idx = +sessionStorage.getItem('fitSVT_avIdx') || 0;
-    if(!sessionStorage.getItem('fitSVT_avSet')){
-      idx = Math.floor(Math.random()*arr.length);
-      sessionStorage.setItem('fitSVT_avIdx', idx);
-      sessionStorage.setItem('fitSVT_avSet','1');
-    }
-    el.style.backgroundImage = `url("${arr[idx % arr.length].src}")`;
+    return;
   }
+  // 按日期轮换：单人先轮，一轮结束后用全员合照
+  // 槽位 0 = 全员合照，排在最后；其余单人按顺序轮
+  const group = filled.filter((a,i) => i===0);   // 全员合照（槽位0）
+  const singles = filled.filter((a,i) => i!==0);  // 其余单人
+  const seq = singles.concat(group);             // 单人在前，合照在末尾
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  const idx = dayOfYear % seq.length;
+  el.style.backgroundImage = `url("${seq[idx].src}")`;
 }
 // 头像点击 = 打开头像库
 document.getElementById('avatar').onclick = ()=>{

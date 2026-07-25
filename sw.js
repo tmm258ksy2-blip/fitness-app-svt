@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitSVT-v16';
+const CACHE_NAME = 'fitSVT-v17';
 const ASSETS = [
   './',
   './index.html',
