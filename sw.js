@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitSVT-v18';
+const CACHE_NAME = 'fitSVT-v19';
 const ASSETS = [
   './',
   './index.html',
@@ -52,12 +52,22 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(resp => {
-          // 拿到新版，顺便更新缓存
-          const copy = resp.clone();
-          caches.open(CACHE_NAME).then(c => c.put(event.request, copy)).catch(()=>{});
-          return resp;
+          // 网络成功（2xx/3xx 都算成功，GitHub Pages 导航会有 304）
+          if(resp.ok || resp.type === 'opaqueredirect' || (resp.status >= 300 && resp.status < 400)){
+            const copy = resp.clone();
+            caches.open(CACHE_NAME).then(c => c.put(event.request, copy)).catch(()=>{});
+            return resp;
+          }
+          // 网络返回非成功状态码，尝试用缓存
+          return caches.match(event.request).then(c => c || resp);
         })
-        .catch(() => caches.match(event.request).then(c => c || new Response('离线模式', {status:200})))
+        .catch(() => {
+          // 网络完全失败，用缓存兜底
+          return caches.match(event.request).then(c => c || new Response(
+            '<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>加载中</title><style>body{font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#fde6ee;color:#9b3a5a;text-align:center;padding:20px;}div{max-width:300px;}h2{margin:0 0 10px;}p{font-size:14px;margin:8px 0;}button{background:#ff8aab;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-size:14px;margin-top:12px;cursor:pointer;}</style></head><body><div><h2>📱 网络似乎断开了</h2><p>请检查网络连接后重试</p><p style="font-size:12px;color:#888;">你的数据已保存在手机里，联网后即可恢复</p><button onclick="location.reload()">🔄 重新加载</button></div></body></html>',
+            {status:200, headers:{'Content-Type':'text/html; charset=utf-8'}}
+          ));
+        })
     );
     return;
   }

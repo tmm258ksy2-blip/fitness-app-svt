@@ -2286,20 +2286,19 @@ window.addEventListener('resize', ()=>renderWeight());
   // 强制刷新：URL 带 ?fresh=1 时，注销所有 SW + 清缓存 + 重新加载（绕过旧 SW 控制）
   if(new URLSearchParams(location.search).get('fresh') === '1'){
     console.log('[fresh] 检测到强制刷新参数，清理所有缓存和 SW');
-    const freshReload = ()=>{
-      if('caches' in window){
-        caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(()=>{
-          if(navigator.serviceWorker){
-            navigator.serviceWorker.getRegistrations()
-              .then(regs => Promise.all(regs.map(r => r.unregister())))
-              .then(()=>{ location.href = location.pathname; });
-          } else {
-            location.href = location.pathname;
-          }
-        });
-      } else {
-        location.href = location.pathname;
-      }
+    const freshReload = async ()=>{
+      try{
+        if('caches' in window){
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        }
+        if(navigator.serviceWorker){
+          const regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(r => r.unregister()));
+        }
+      }catch(e){ console.error('[fresh] cleanup error', e); }
+      // 跳转到干净地址，带时间戳确保不走任何缓存
+      location.replace(location.pathname + '?t=' + Date.now());
     };
     freshReload();
   }
