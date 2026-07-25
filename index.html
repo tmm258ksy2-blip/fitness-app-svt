@@ -2061,8 +2061,9 @@ function fetchInbox(){
       const lastApplied = +localStorage.getItem('fitSVT_inbox_ver') || 0;
       if(ver <= lastApplied){ console.log('[inbox] 已是最新 ver='+ver); return; }
       let count = 0;
-      // 同步前先清掉今天的旧记录，避免重复（按 inbox 完整覆盖今天）
-      const t = today();
+      // 同步前先清掉目标日期的旧记录，避免重复（按 inbox 完整覆盖该日期）
+      // 如果 inbox 指定了 date 字段，就同步到那一天；否则同步到今天
+      const t = data.date || today();
       if(data.meals){ state.meals[t] = []; data.meals.forEach(m => { state.meals[t].push({id:uid(), ts:Date.now(), ...m}); count++; }); }
       if(data.workouts){ state.workouts[t] = []; data.workouts.forEach(w => { state.workouts[t].push({id:uid(), ts:Date.now(), ...w}); count++; }); }
       if(data.weight){
