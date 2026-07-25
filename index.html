@@ -567,6 +567,7 @@
     <div class="card">
       <h3><span class="dot"></span>数据</h3>
       <button class="btn btn-ghost" data-act="export">导出数据(JSON)</button>
+      <button class="btn btn-ghost" style="margin-top:8px;background:rgba(166,210,236,0.25);color:#3b7a99;" id="forceFreshBtn">🔄 强制刷新 App（修复更新问题）</button>
       <button class="btn btn-ghost" style="margin-top:8px;background:rgba(255,138,171,0.15);color:var(--pink-4);" data-act="reset">清空全部数据</button>
     </div>
     <p style="text-align:center;font-size:11px;color:var(--text-light);margin-top:18px;">
@@ -2065,6 +2066,12 @@ document.getElementById('manualSync').onclick = ()=>{
   toast('正在同步...');
   fetchInbox();
 };
+// 强制刷新按钮：跳转到 ?fresh=1 触发彻底清理
+document.getElementById('forceFreshBtn').onclick = ()=>{
+  if(confirm('将清除所有缓存并重新加载 App（不影响你的数据）。继续？')){
+    location.href = location.pathname + '?fresh=1';
+  }
+};
 
 /* —— SVT 音乐：App 内嵌 YouTube 播放器，一点即播不跳转 —— */
 function ytVideoId(url){
@@ -2223,6 +2230,27 @@ window.addEventListener('resize', ()=>renderWeight());
     });
   }
 
+  // 强制刷新：URL 带 ?fresh=1 时，注销所有 SW + 清缓存 + 重新加载（绕过旧 SW 控制）
+  if(new URLSearchParams(location.search).get('fresh') === '1'){
+    console.log('[fresh] 检测到强制刷新参数，清理所有缓存和 SW');
+    const freshReload = ()=>{
+      if('caches' in window){
+        caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(()=>{
+          if(navigator.serviceWorker){
+            navigator.serviceWorker.getRegistrations()
+              .then(regs => Promise.all(regs.map(r => r.unregister())))
+              .then(()=>{ location.href = location.pathname; });
+          } else {
+            location.href = location.pathname;
+          }
+        });
+      } else {
+        location.href = location.pathname;
+      }
+    };
+    freshReload();
+  }
+
   // 版本检测：只在首次打开时检查一次，不会循环
   function checkAppVersion(){
     fetch('d/app-version.json?t=' + Date.now(), {cache:'no-store'})
@@ -2234,13 +2262,21 @@ window.addEventListener('resize', ()=>renderWeight());
         if(remoteVer > localVer && canReload){
           localStorage.setItem('fitSVT_app_ver', remoteVer);
           sessionStorage.setItem(RELOAD_FLAG, Date.now());
-          // 清缓存后只刷新一次
-          if('caches' in window){
-            caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(()=>{
+          // 先注销所有 Service Worker，再清缓存，再刷新 —— 彻底摆脱旧 SW 控制
+          const doReload = ()=>{
+            if('caches' in window){
+              caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(()=>location.reload());
+            } else {
               location.reload();
-            });
+            }
+          };
+          if(navigator.serviceWorker){
+            navigator.serviceWorker.getRegistrations()
+              .then(regs => Promise.all(regs.map(r => r.unregister())))
+              .then(()=>doReload())
+              .catch(()=>doReload());
           } else {
-            location.reload();
+            doReload();
           }
         } else {
           // 版本一致或刚刷新过，只更新本地版本号
