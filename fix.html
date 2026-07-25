@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>修复 App</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin:0;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px;background:linear-gradient(135deg,#fde6ee,#e6f0fa);min-height:100vh;display:flex;align-items:center;justify-content:center;color:#5a3a4a;}
+  .box{max-width:320px;text-align:center;background:rgba(255,255,255,0.85);border-radius:18px;padding:24px 20px;box-shadow:0 4px 24px rgba(255,138,171,0.15);}
+  h1{font-size:20px;margin:0 0 10px;color:#ff8aab;}
+  p{font-size:13px;line-height:1.6;margin:8px 0;color:#8a5a6a;}
+  button{background:linear-gradient(135deg,#ff8aab,#ffb3c8);color:#fff;border:none;padding:12px 32px;border-radius:22px;font-size:15px;font-weight:700;margin-top:14px;cursor:pointer;box-shadow:0 3px 12px rgba(255,138,171,0.4);}
+  button:active{transform:scale(0.97);}
+  .log{font-size:11px;color:#999;margin-top:10px;word-break:break-all;}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>🔧 修复 App</h1>
+  <p>点击下面的按钮，清除所有缓存和 Service Worker，然后重新打开 App</p>
+  <button id="fix">一键修复</button>
+  <div class="log" id="log"></div>
+</div>
+<script>
+// 这个页面本身不注册 Service Worker，所以能稳定加载
+async function log(msg){
+  document.getElementById('log').textContent += msg + '\n';
+}
+document.getElementById('fix').onclick = async ()=>{
+  log('开始清理...');
+  try{
+    // 1. 注销所有 Service Worker
+    if(navigator.serviceWorker){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      log('发现 ' + regs.length + ' 个 Service Worker');
+      await Promise.all(regs.map(r => { log('注销: ' + r.scope); return r.unregister(); }));
+    }
+    // 2. 清除所有缓存
+    if('caches' in window){
+      const keys = await caches.keys();
+      log('发现 ' + keys.length + ' 个缓存');
+      await Promise.all(keys.map(k => { log('删除缓存: ' + k); return caches.delete(k); }));
+    }
+    // 3. 清除 localStorage 里的版本号（让 App 重新检测版本）
+    localStorage.removeItem('fitSVT_app_ver');
+    localStorage.removeItem('fitSVT_inbox_ver');
+    log('✅ 清理完成！');
+    log('2 秒后自动跳转到 App...');
+    setTimeout(()=>{ location.replace('./'); }, 2000);
+  }catch(e){
+    log('❌ 错误: ' + e.message);
+    log('请截图发给我');
+  }
+};
+</script>
+</body>
+</html>
