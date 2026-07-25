@@ -91,19 +91,29 @@
     box-shadow:var(--shadow-sm);
   }
 
-  /* B 站内嵌播放器 */
+  /* B 站内嵌播放器（默认迷你播放条，可展开看 MV） */
   .yt-player-wrap{
     position:fixed;left:0;right:0;bottom:0;z-index:150;
     background:rgba(40,25,40,0.96);backdrop-filter:blur(12px);
-    border-radius:18px 18px 0 0;padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 12px);
+    border-radius:18px 18px 0 0;padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 8px);
     box-shadow:0 -4px 24px rgba(0,0,0,0.18);transform:translateY(120%);transition:transform .3s;
     max-width:480px;margin:0 auto;
   }
   .yt-player-wrap.show{transform:translateY(0);}
-  .yt-player-wrap .yt-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .yt-player-wrap .yt-head{display:flex;align-items:center;gap:10px;}
+  .yt-player-wrap .yt-disc{
+    width:28px;height:28px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,var(--pink-4),var(--blue-3));
+    display:flex;align-items:center;justify-content:center;font-size:14px;
+    animation:spin 3s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
   .yt-player-wrap .yt-title{font-size:13px;font-weight:700;color:#fff;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .yt-player-wrap .yt-close{background:rgba(255,255,255,0.15);color:#fff;border:none;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0;margin-left:8px;}
-  .yt-player-wrap .yt-iframe{width:100%;aspect-ratio:16/9;border-radius:10px;border:none;background:#000;}
+  .yt-player-wrap .yt-toggle{background:rgba(255,255,255,0.15);color:#fff;border:none;width:28px;height:28px;border-radius:50%;font-size:13px;cursor:pointer;flex-shrink:0;}
+  .yt-player-wrap .yt-close{background:rgba(255,255,255,0.15);color:#fff;border:none;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0;}
+  /* iframe 默认高度 0（迷你条模式，只听声音），展开时恢复 16:9 */
+  .yt-player-wrap .yt-iframe{width:100%;height:0;border:none;background:#000;transition:height .25s;display:block;}
+  .yt-player-wrap.expanded .yt-iframe{height:auto;aspect-ratio:16/9;border-radius:10px;margin-top:8px;}
 
   /* 头像库网格 */
   .avatar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
@@ -728,11 +738,13 @@
   </div>
 </div>
 
-<!-- B 站内嵌播放器（浮在底部，不跳转） -->
+<!-- B 站内嵌播放器（默认迷你播放条只听声音，点⤢可展开看 MV） -->
 <div class="yt-player-wrap" id="ytPlayer">
   <div class="yt-head">
-    <span class="yt-title" id="ytTitle">🎵</span>
-    <button class="yt-close" id="ytClose">✕</button>
+    <div class="yt-disc">🎵</div>
+    <span class="yt-title" id="ytTitle">正在播放</span>
+    <button class="yt-toggle" id="ytToggle" title="展开/收起 MV">⤢</button>
+    <button class="yt-close" id="ytClose" title="关闭">✕</button>
   </div>
   <iframe class="yt-iframe" id="ytIframe" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>
 </div>
@@ -2083,14 +2095,23 @@ function playSong(){
   if(!currentSong) pickRandomSong();
   if(!currentSong.bv){ toast('歌曲资源异常'); return; }
   const iframe = document.getElementById('ytIframe');
-  // B 站嵌入式播放器：autoplay=1 自动播放，high_quality=1 高画质
+  // B 站嵌入式播放器：autoplay=1 自动播放，high_quality=1 高画质，danmaku=0 关弹幕
   iframe.src = `https://player.bilibili.com/player.html?bvid=${currentSong.bv}&page=1&autoplay=1&high_quality=1&danmaku=0`;
-  document.getElementById('ytTitle').textContent = '🎵 ' + currentSong.name;
+  document.getElementById('ytTitle').textContent = currentSong.name + ' · SEVENTEEN';
+  // 每次播放默认收起（迷你条模式，只听声音）
   document.getElementById('ytPlayer').classList.add('show');
+  document.getElementById('ytPlayer').classList.remove('expanded');
+  document.getElementById('ytToggle').textContent = '⤢';
 }
 document.getElementById('ytClose').onclick = ()=>{
   document.getElementById('ytIframe').src = '';
-  document.getElementById('ytPlayer').classList.remove('show');
+  document.getElementById('ytPlayer').classList.remove('show','expanded');
+};
+// 展开/收起 MV 画面
+document.getElementById('ytToggle').onclick = ()=>{
+  const wrap = document.getElementById('ytPlayer');
+  wrap.classList.toggle('expanded');
+  document.getElementById('ytToggle').textContent = wrap.classList.contains('expanded') ? '⤡' : '⤢';
 };
 // 首页音乐卡片：点卡片任意位置 = 随机选歌+立即播放
 document.getElementById('svtMusicCard').onclick = ()=>{
