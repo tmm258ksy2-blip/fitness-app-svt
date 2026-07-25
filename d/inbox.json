@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "date": "2026-07-25",
   "meals": [
     {"type":"早餐","name":"豆腐脑一碗","kcal":120,"protein":8,"carb":10,"fat":5},
@@ -19,5 +19,7 @@
     {"type":"力量训练","name":"臀腿训练","min":20,"kcal":88}
   ],
   "weight": null,
-  "note": "2026-07-25 增加1杯如实奇亚籽酸奶"
+  "goals": {"startW": 66, "targetW": 58, "cal": 1200, "exerciseMin": 30},
+  "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
+  "note": "2026-07-25 完整恢复今天+目标+身体参数"
 }
