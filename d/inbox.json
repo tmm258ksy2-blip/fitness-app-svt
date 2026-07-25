@@ -1,17 +1,22 @@
 {
-  "version": 10,
-  "date": "2026-07-24",
-  "clearToday": true,
+  "version": 11,
+  "date": "2026-07-25",
   "meals": [
-    {"type":"早餐","name":"南瓜一牙","kcal":35,"protein":1},
-    {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12},
-    {"type":"早餐","name":"如实酸奶一杯","kcal":100,"protein":10},
-    {"type":"午餐","name":"鸡蛋面一碗","kcal":450,"protein":20},
-    {"type":"加餐","name":"牛肉四片","kcal":250,"protein":26}
+    {"type":"早餐","name":"豆腐脑一碗","kcal":120,"protein":8,"carb":10,"fat":5},
+    {"type":"早餐","name":"胡辣汤（捞菜料）","kcal":150,"protein":6,"carb":15,"fat":8},
+    {"type":"早餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5},
+    {"type":"早餐","name":"油条半根","kcal":110,"protein":2,"carb":12,"fat":6},
+    {"type":"午餐","name":"饺子15个（莲花白大肉馅）","kcal":525,"protein":22,"carb":55,"fat":20},
+    {"type":"晚餐","name":"饺子2个","kcal":70,"protein":3,"carb":7,"fat":3},
+    {"type":"晚餐","name":"油条半根","kcal":110,"protein":2,"carb":12,"fat":6},
+    {"type":"晚餐","name":"冬瓜炒肉","kcal":180,"protein":12,"carb":6,"fat":12},
+    {"type":"晚餐","name":"葱花饼一牙","kcal":160,"protein":3,"carb":22,"fat":6},
+    {"type":"晚餐","name":"葱花饼夹炒辣椒","kcal":40,"protein":1,"carb":3,"fat":3}
   ],
   "workouts": [
-    {"type":"力量训练","name":"肩背训练","min":30,"kcal":231}
+    {"type":"骑行","name":"骑行 15.3km","min":43,"kcal":284},
+    {"type":"力量训练","name":"臀腿训练","min":20,"kcal":88}
   ],
   "weight": null,
-  "note": "修正：7-24 记录回到 7-24，清除 7-25 误写的数据"
+  "note": "2026-07-25 今天的饮食和锻炼"
 }
