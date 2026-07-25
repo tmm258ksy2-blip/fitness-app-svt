@@ -91,7 +91,7 @@
     box-shadow:var(--shadow-sm);
   }
 
-  /* YouTube 内嵌播放器 */
+  /* B 站内嵌播放器 */
   .yt-player-wrap{
     position:fixed;left:0;right:0;bottom:0;z-index:150;
     background:rgba(40,25,40,0.96);backdrop-filter:blur(12px);
@@ -728,13 +728,13 @@
   </div>
 </div>
 
-<!-- YouTube 内嵌播放器（浮在底部，不跳转） -->
+<!-- B 站内嵌播放器（浮在底部，不跳转） -->
 <div class="yt-player-wrap" id="ytPlayer">
   <div class="yt-head">
     <span class="yt-title" id="ytTitle">🎵</span>
     <button class="yt-close" id="ytClose">✕</button>
   </div>
-  <iframe class="yt-iframe" id="ytIframe" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
+  <iframe class="yt-iframe" id="ytIframe" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>
 </div>
 
 <script>
@@ -790,23 +790,23 @@ function load(){
 function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
 
 /* —— 内置食物热量估算库（每份基准 kcal/蛋白 g）—— */
-/* —— SEVENTEEN 歌曲库 —— */
+/* —— SEVENTEEN 歌曲库（B 站资源，国内可直接播放，BV 号均已校验）—— */
 const SVT_SONGS = [
-  {name:'Super', yt:'https://www.youtube.com/watch?v=-gQi5rN6Qa0'},
-  {name:'God of Music', yt:'https://www.youtube.com/watch?v=-sAhkZwKqQU'},
-  {name:'HOT', yt:'https://www.youtube.com/watch?v=gRnuFCUn2Mo'},
-  {name:'Don Wanna Cry', yt:'https://www.youtube.com/watch?v=zEHifBiCMKs'},
-  {name:'Clap', yt:'https://www.youtube.com/watch?v=CJqi6gQpRUQ'},
-  {name:'Left & Right', yt:'https://www.youtube.com/watch?v=qy0PRgoM24Q'},
-  {name:'Mansae', yt:'https://www.youtube.com/watch?v=4TYsH7dAo78'},
-  {name:'Pretty U', yt:'https://www.youtube.com/watch?v=JiAh7XacnXk'},
-  {name:'Very Nice', yt:'https://www.youtube.com/watch?v=J_KAhENLsHg'},
-  {name:'Home', yt:'https://www.youtube.com/watch?v=R4IftzZG7Zc'},
-  {name:'Fallin Flower', yt:'https://www.youtube.com/watch?v=uE5lBL6Q3zA'},
-  {name:'Fear', yt:'https://www.youtube.com/watch?v=PuEtHn7SjwE'},
-  {name:'Ready to Love', yt:'https://www.youtube.com/watch?v=Fk1Q3RyPueY'},
-  {name:'Rock with You', yt:'https://www.youtube.com/watch?v=JMxfB7XilJk'},
-  {name:'Cheer Up', yt:'https://www.youtube.com/watch?v=9rzHO3Z7zOk'}
+  {name:'Super',              bv:'BV1dg4y1j7Eg'},
+  {name:'God of Music',       bv:'BV1gC4y137dK'},
+  {name:'HOT',                bv:'BV1BY411u7ua'},
+  {name:"Don't Wanna Cry",    bv:'BV1DM4y1D7a5'},
+  {name:'Rock with You',      bv:'BV1pL411G797'},
+  {name:'Mansae (万岁)',      bv:'BV113411w7eC'},
+  {name:'Pretty U',           bv:'BV1vs411q7EB'},
+  {name:'Left & Right',       bv:'BV1ma4y1Y7ck'},
+  {name:'Clap (拍手)',        bv:'BV1gx41177Ws'},
+  {name:'Very Nice (非常好)', bv:'BV1UC4y1r7x5'},
+  {name:'Home',               bv:'BV14t411h7bm'},
+  {name:'Fallin Flower (舞之华)', bv:'BV1X741117yK'},
+  {name:'Fear (毒)',          bv:'BV18J411K7Ks'},
+  {name:'Ready to Love',      bv:'BV1964y1X7HJ'},
+  {name:'_WORLD',             bv:'BV1PU4y1i7qh'}
 ];
 
 /* —— 锻炼计划库（按星期几）—— */
@@ -2073,11 +2073,7 @@ document.getElementById('forceFreshBtn').onclick = ()=>{
   }
 };
 
-/* —— SVT 音乐：App 内嵌 YouTube 播放器，一点即播不跳转 —— */
-function ytVideoId(url){
-  const m = String(url).match(/[?&]v=([^&]+)/) || String(url).match(/youtu\.be\/([^?&]+)/);
-  return m ? m[1] : null;
-}
+/* —— SVT 音乐：App 内嵌 B 站播放器，一点即播不跳转（国内可直连）—— */
 let currentSong = null;
 function pickRandomSong(){
   currentSong = SVT_SONGS[Math.floor(Math.random()*SVT_SONGS.length)];
@@ -2085,10 +2081,10 @@ function pickRandomSong(){
 }
 function playSong(){
   if(!currentSong) pickRandomSong();
-  const vid = ytVideoId(currentSong.yt);
-  if(!vid){ toast('歌曲链接异常'); return; }
+  if(!currentSong.bv){ toast('歌曲资源异常'); return; }
   const iframe = document.getElementById('ytIframe');
-  iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&playsinline=1`;
+  // B 站嵌入式播放器：autoplay=1 自动播放，high_quality=1 高画质
+  iframe.src = `https://player.bilibili.com/player.html?bvid=${currentSong.bv}&page=1&autoplay=1&high_quality=1&danmaku=0`;
   document.getElementById('ytTitle').textContent = '🎵 ' + currentSong.name;
   document.getElementById('ytPlayer').classList.add('show');
 }
