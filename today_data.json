@@ -1,0 +1,42 @@
+{
+  "meals": [
+    {
+      "type": "早餐",
+      "name": "南瓜一牙",
+      "kcal": 35,
+      "protein": 1
+    },
+    {
+      "type": "早餐",
+      "name": "鸡蛋两个",
+      "kcal": 150,
+      "protein": 12
+    },
+    {
+      "type": "早餐",
+      "name": "如实酸奶一杯",
+      "kcal": 100,
+      "protein": 10
+    },
+    {
+      "type": "午餐",
+      "name": "鸡蛋面一碗",
+      "kcal": 450,
+      "protein": 20
+    },
+    {
+      "type": "加餐",
+      "name": "牛肉四片",
+      "kcal": 250,
+      "protein": 26
+    }
+  ],
+  "workouts": [
+    {
+      "type": "力量训练",
+      "name": "肩背训练",
+      "min": 30,
+      "kcal": 231
+    }
+  ]
+}

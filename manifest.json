@@ -1,0 +1,14 @@
+{
+  "name": "减脂小本本 · SVT",
+  "short_name": "减脂小本本",
+  "description": "记录日常减脂饮食、运动、体重变化的 SVT 主题工作台",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fde6ee",
+  "theme_color": "#f9c5d1",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
