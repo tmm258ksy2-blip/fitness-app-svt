@@ -2064,6 +2064,15 @@ function fetchInbox(){
       // 同步前先清掉目标日期的旧记录，避免重复（按 inbox 完整覆盖该日期）
       // 如果 inbox 指定了 date 字段，就同步到那一天；否则同步到今天
       const t = data.date || today();
+      // 如果 inbox 带了 clearToday 指令，清掉今天被错误写入的数据（用于修正之前同步错日期的情况）
+      if(data.clearToday && state.meals[today()]){
+        const before = (state.meals[today()]||[]).length + (state.workouts[today()]||[]).length;
+        if(before > 0){
+          state.meals[today()] = [];
+          state.workouts[today()] = [];
+          console.log('[inbox] 已清除今天被错误写入的', before, '条记录');
+        }
+      }
       if(data.meals){ state.meals[t] = []; data.meals.forEach(m => { state.meals[t].push({id:uid(), ts:Date.now(), ...m}); count++; }); }
       if(data.workouts){ state.workouts[t] = []; data.workouts.forEach(w => { state.workouts[t].push({id:uid(), ts:Date.now(), ...w}); count++; }); }
       if(data.weight){

@@ -1,6 +1,7 @@
 {
-  "version": 9,
+  "version": 10,
   "date": "2026-07-24",
+  "clearToday": true,
   "meals": [
     {"type":"早餐","name":"南瓜一牙","kcal":35,"protein":1},
     {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12},
@@ -12,5 +13,5 @@
     {"type":"力量训练","name":"肩背训练","min":30,"kcal":231}
   ],
   "weight": null,
-  "note": "找回 7-24 昨天的记录"
+  "note": "修正：7-24 记录回到 7-24，清除 7-25 误写的数据"
 }
