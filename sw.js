@@ -1,87 +1,82 @@
-const CACHE_NAME = 'fitSVT-v19';
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/apple-touch-icon.png',
-  './assets/svt.jpg'
-];
-// 这些资源永远走网络（不缓存旧版）
-const NETWORK_ONLY = [
-  './d/inbox.json',
-  './d/app-version.json',
-  './index.html',
-  './',
-  './manifest.json'
-];
+const CACHE_NAME = 'fitSVT-v20';
 
+// 安装时跳过等待，立即激活
 self.addEventListener('install', event => {
-  // 不再预先缓存，让 fetch 时按需拉取，避免 install 阶段失败
   self.skipWaiting();
-  event.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)).catch(()=>{}));
 });
 
+// 激活时清掉旧缓存，立即接管所有客户端
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
-  );
-  // 立即接管所有客户端
-  event.waitUntil(self.clients.claim());
-  // 通知所有页面：有新 SW 激活了，建议刷新
-  self.clients.matchAll({includeUncontrolled:true}).then(clients =>
-    clients.forEach(c => c.postMessage({type:'SW_UPDATED'}))
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)));
+      await self.clients.claim();
+    })()
   );
 });
 
-// 收到主页面发来的 SKIP_WAITING 消息，立即激活
 self.addEventListener('message', event => {
   if(event.data && event.data.type === 'SKIP_WAITING'){
     self.skipWaiting();
   }
 });
 
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
+// 一个永远可用的兜底离线页
+const OFFLINE_HTML = '<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>加载中</title><style>body{font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#fde6ee;color:#9b3a5a;text-align:center;padding:20px;}div{max-width:300px;}h2{margin:0 0 10px;}p{font-size:14px;margin:8px 0;color:#8a5a6a;}button{background:#ff8aab;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-size:14px;margin-top:12px;cursor:pointer;}</style></head><body><div><h2>📱 正在连接</h2><p>请稍等或检查网络</p><p style="font-size:12px;color:#aaa;">数据已保存在手机里</p><button onclick="location.reload()">🔄 重新加载</button></div></body></html>';
 
-  // 导航请求（HTML 页面）和网络优先资源：先去网络拿最新的
-  if(event.request.mode === 'navigation' || NETWORK_ONLY.some(p => url.pathname.endsWith(p.replace('./','/')))){
+self.addEventListener('fetch', event => {
+  const req = event.request;
+
+  // 只处理 GET 请求，其他请求直接放行
+  if(req.method !== 'GET'){
+    return;
+  }
+
+  // 导航请求（HTML 页面）：网络优先，失败用缓存，都没了用兜底页
+  if(req.mode === 'navigation'){
     event.respondWith(
-      fetch(event.request)
-        .then(resp => {
-          // 网络成功（2xx/3xx 都算成功，GitHub Pages 导航会有 304）
-          if(resp.ok || resp.type === 'opaqueredirect' || (resp.status >= 300 && resp.status < 400)){
-            const copy = resp.clone();
-            caches.open(CACHE_NAME).then(c => c.put(event.request, copy)).catch(()=>{});
+      (async () => {
+        try {
+          const resp = await fetch(req);
+          if(resp && (resp.ok || resp.status === 0)){
+            const cache = await caches.open(CACHE_NAME);
+            cache.put(req, resp.clone()).catch(()=>{});
             return resp;
           }
-          // 网络返回非成功状态码，尝试用缓存
-          return caches.match(event.request).then(c => c || resp);
-        })
-        .catch(() => {
-          // 网络完全失败，用缓存兜底
-          return caches.match(event.request).then(c => c || new Response(
-            '<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>加载中</title><style>body{font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#fde6ee;color:#9b3a5a;text-align:center;padding:20px;}div{max-width:300px;}h2{margin:0 0 10px;}p{font-size:14px;margin:8px 0;}button{background:#ff8aab;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-size:14px;margin-top:12px;cursor:pointer;}</style></head><body><div><h2>📱 网络似乎断开了</h2><p>请检查网络连接后重试</p><p style="font-size:12px;color:#888;">你的数据已保存在手机里，联网后即可恢复</p><button onclick="location.reload()">🔄 重新加载</button></div></body></html>',
-            {status:200, headers:{'Content-Type':'text/html; charset=utf-8'}}
-          ));
-        })
+          // 网络返回非成功，尝试缓存
+          const cached = await caches.match(req);
+          if(cached) return cached;
+          return resp;  // 返回网络响应（即使是错误页也比 null 强）
+        } catch(e) {
+          // 网络完全失败
+          const cached = await caches.match(req);
+          if(cached) return cached;
+          return new Response(OFFLINE_HTML, {status:200, headers:{'Content-Type':'text/html; charset=utf-8'}});
+        }
+      })()
     );
     return;
   }
 
-  // 其他资源：stale-while-revalidate（先用缓存，后台更新）
+  // 非导航请求（JS/CSS/图片/JSON 等）：stale-while-revalidate
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      const networkFetch = fetch(event.request)
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cached = await caches.match(req);
+      const fetchPromise = fetch(req)
         .then(resp => {
-          const copy = resp.clone();
-          caches.open(CACHE_NAME).then(c => c.put(event.request, copy)).catch(()=>{});
+          if(resp && resp.ok){
+            cache.put(req, resp.clone()).catch(()=>{});
+          }
           return resp;
-        }).catch(()=>cached);
-      return cached || networkFetch;
-    })
+        })
+        .catch(() => null);  // 失败返回 null，不抛错
+      // 有缓存先用缓存，没有就等网络；网络也失败就返回空 Response
+      if(cached) return cached;
+      const netResp = await fetchPromise;
+      if(netResp) return netResp;
+      return new Response('', {status:200});
+    })()
   );
 });

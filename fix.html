@@ -45,8 +45,33 @@ document.getElementById('fix').onclick = async ()=>{
     localStorage.removeItem('fitSVT_app_ver');
     localStorage.removeItem('fitSVT_inbox_ver');
     log('✅ 清理完成！');
-    log('2 秒后自动跳转到 App...');
-    setTimeout(()=>{ location.replace('./'); }, 2000);
+    log('正在重新注册 Service Worker...');
+    // 先注册新版 SW，等它激活后再跳转，避免跳转后被旧 SW 拦截
+    if('serviceWorker' in navigator){
+      try{
+        const reg = await navigator.serviceWorker.register('sw.js');
+        log('SW 已注册，scope: ' + reg.scope);
+        // 等 SW 激活
+        await new Promise(resolve => {
+          if(reg.active){ resolve(); return; }
+          const worker = reg.installing || reg.waiting;
+          if(worker){
+            worker.addEventListener('statechange', () => {
+              if(worker.state === 'activated') resolve();
+            });
+            // 超时保护：3 秒后无论如何都跳转
+            setTimeout(resolve, 3000);
+          } else {
+            setTimeout(resolve, 1000);
+          }
+        });
+        log('SW 已激活');
+      }catch(e){
+        log('SW 注册失败: ' + e.message + '（不影响，直接跳转）');
+      }
+    }
+    log('跳转到 App...');
+    setTimeout(()=>{ location.replace('./'); }, 500);
   }catch(e){
     log('❌ 错误: ' + e.message);
     log('请截图发给我');
