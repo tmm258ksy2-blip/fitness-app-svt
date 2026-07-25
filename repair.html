@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>修复</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(135deg,#fde6ee,#e6f0fa);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;color:#5a3a4a;}
+  .box{max-width:320px;text-align:center;background:rgba(255,255,255,0.9);border-radius:18px;padding:24px 20px;box-shadow:0 4px 24px rgba(255,138,171,0.15);}
+  h1{font-size:20px;margin:0 0 10px;color:#ff8aab;}
+  p{font-size:13px;line-height:1.6;margin:8px 0;color:#8a5a6a;}
+  button{background:linear-gradient(135deg,#ff8aab,#ffb3c8);color:#fff;border:none;padding:12px 32px;border-radius:22px;font-size:15px;font-weight:700;margin-top:14px;cursor:pointer;box-shadow:0 3px 12px rgba(255,138,171,0.4);}
+  button:active{transform:scale(0.97);}
+  .log{font-size:11px;color:#999;margin-top:10px;word-break:break-all;white-space:pre-wrap;text-align:left;max-height:200px;overflow-y:auto;}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>🔧 修复 App</h1>
+  <p>点击按钮清除缓存和 Service Worker</p>
+  <button id="fix">一键修复</button>
+  <div class="log" id="log"></div>
+</div>
+<script>
+async function log(msg){ document.getElementById('log').textContent += msg + '\n'; }
+document.getElementById('fix').onclick = async ()=>{
+  log('开始...');
+  try{
+    if(navigator.serviceWorker){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      log('发现 '+regs.length+' 个 SW');
+      for(const r of regs){ log('注销: '+r.scope); await r.unregister(); }
+    }
+    if('caches' in window){
+      const keys = await caches.keys();
+      log('缓存: '+keys.length+' 个');
+      for(const k of keys){ log('删除: '+k); await caches.delete(k); }
+    }
+    localStorage.removeItem('fitSVT_app_ver');
+    localStorage.removeItem('fitSVT_inbox_ver');
+    log('完成！2秒后跳转...');
+    setTimeout(()=>location.replace('./'), 2000);
+  }catch(e){
+    log('错误: '+e.message);
+  }
+};
+</script>
+</body>
+</html>

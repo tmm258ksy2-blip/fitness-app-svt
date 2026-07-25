@@ -2295,93 +2295,34 @@ document.getElementById('avatar').onclick = ()=>{
 
 /* —— 横屏/窗口缩放时重绘图表 —— */
 window.addEventListener('resize', ()=>renderWeight());
-/* —— Service Worker + 版本检测（统一管理，避免闪屏循环）—— */
-(function(){
-  const RELOAD_FLAG = 'fitSVT_reloaded';
-  // 防止连续刷新：如果刚刚刷新过（3秒内），不再刷新
-  const lastReload = +sessionStorage.getItem(RELOAD_FLAG) || 0;
-  const canReload = Date.now() - lastReload > 3000;
 
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => {
-        reg.addEventListener('updatefound', () => {
-          const newSW = reg.installing;
-          if(!newSW) return;
-          newSW.addEventListener('statechange', () => {
-            if(newSW.state === 'installed' && navigator.serviceWorker.controller && canReload){
-              sessionStorage.setItem(RELOAD_FLAG, Date.now());
-              newSW.postMessage({type:'SKIP_WAITING'});
-            }
-          });
-        });
-      })
-      .catch(err => console.error('SW failed:', err));
-
-    navigator.serviceWorker.addEventListener('message', event => {
-      if(event.data && event.data.type === 'SW_UPDATED' && canReload){
-        sessionStorage.setItem(RELOAD_FLAG, Date.now());
-        location.reload();
-      }
-    });
-  }
-
-  // 强制刷新：URL 带 ?fresh=1 时，注销所有 SW + 清缓存 + 重新加载（绕过旧 SW 控制）
-  if(new URLSearchParams(location.search).get('fresh') === '1'){
-    console.log('[fresh] 检测到强制刷新参数，清理所有缓存和 SW');
-    const freshReload = async ()=>{
-      try{
-        if('caches' in window){
-          const keys = await caches.keys();
-          await Promise.all(keys.map(k => caches.delete(k)));
-        }
-        if(navigator.serviceWorker){
-          const regs = await navigator.serviceWorker.getRegistrations();
-          await Promise.all(regs.map(r => r.unregister()));
-        }
-      }catch(e){ console.error('[fresh] cleanup error', e); }
-      // 跳转到干净地址，带时间戳确保不走任何缓存
-      location.replace(location.pathname + '?t=' + Date.now());
-    };
-    freshReload();
-  }
-
-  // 版本检测：只在首次打开时检查一次，不会循环
-  function checkAppVersion(){
-    fetch('d/app-version.json?t=' + Date.now(), {cache:'no-store'})
-      .then(r => r.json())
-      .then(data => {
-        const remoteVer = +data.version || 0;
-        const localVer = +localStorage.getItem('fitSVT_app_ver') || 0;
-        console.log('[version] remote='+remoteVer+' local='+localVer+' canReload='+canReload);
-        if(remoteVer > localVer && canReload){
-          localStorage.setItem('fitSVT_app_ver', remoteVer);
-          sessionStorage.setItem(RELOAD_FLAG, Date.now());
-          // 先注销所有 Service Worker，再清缓存，再刷新 —— 彻底摆脱旧 SW 控制
-          const doReload = ()=>{
-            if('caches' in window){
-              caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(()=>location.reload());
-            } else {
-              location.reload();
-            }
-          };
-          if(navigator.serviceWorker){
-            navigator.serviceWorker.getRegistrations()
-              .then(regs => Promise.all(regs.map(r => r.unregister())))
-              .then(()=>doReload())
-              .catch(()=>doReload());
-          } else {
-            doReload();
-          }
-        } else {
-          // 版本一致或刚刷新过，只更新本地版本号
-          localStorage.setItem('fitSVT_app_ver', remoteVer);
-        }
-      })
-      .catch(()=>{});
-  }
-  checkAppVersion();
+/* —— Service Worker：彻底注销，不再注册（避免 SW 导致白屏）—— */
+(async function(){
+  try{
+    // 清除所有缓存
+    if('caches' in window){
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+      console.log('[sw] 已清除所有缓存:', keys.length);
+    }
+    // 注销所有 Service Worker
+    if(navigator.serviceWorker){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+      console.log('[sw] 已注销所有 SW:', regs.length);
+    }
+  }catch(e){ console.error('[sw] cleanup error', e); }
 })();
+
+/* —— 版本检测：只记录版本号，不自动刷新（避免白屏）—— */
+  fetch('d/app-version.json?t=' + Date.now(), {cache:'no-store'})
+    .then(r => r.json())
+    .then(data => {
+      const remoteVer = +data.version || 0;
+      localStorage.setItem('fitSVT_app_ver', remoteVer);
+      console.log('[version] current='+remoteVer);
+    })
+    .catch(()=>{});
 </script>
 </body>
 </html>
