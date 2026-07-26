@@ -1,5 +1,5 @@
 {
-  "version": 15,
+  "version": 16,
   "date": "2026-07-26",
   "meals": [
     {"type":"早餐","name":"南瓜一牙","kcal":20,"protein":0.5,"carb":5,"fat":0.1},
@@ -9,11 +9,12 @@
     {"type":"午餐","name":"火腿肠","kcal":130,"protein":5,"carb":3,"fat":10},
     {"type":"午餐","name":"豆腐","kcal":80,"protein":6,"carb":3,"fat":4},
     {"type":"午餐","name":"西红柿鸡蛋","kcal":130,"protein":8,"carb":5,"fat":8},
-    {"type":"午餐","name":"粉条包菜","kcal":55,"protein":1,"carb":12,"fat":1}
+    {"type":"午餐","name":"粉条包菜","kcal":55,"protein":1,"carb":12,"fat":1},
+    {"type":"加餐","name":"玉米热狗香肠 32g","kcal":85,"protein":2.5,"carb":5,"fat":6}
   ],
   "workouts": [],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1200, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-26 早餐+午餐"
+  "note": "2026-07-26 加餐 玉米热狗香肠"
 }
