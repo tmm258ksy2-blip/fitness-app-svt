@@ -1278,15 +1278,15 @@ function renderMacro(protein, carb, fat){
   const bar = (v, g) => Math.min(v / g * 100, 100);
   document.getElementById('macroBox').innerHTML = `
     <div class="macro-row">
-      <div class="label"><span>蛋白质</span><span class="v">${protein.toFixed(1)} / ${proGoal} g</span></div>
+      <div class="label"><span>蛋白质</span><span class="v">${Math.round(protein)} / ${proGoal} g</span></div>
       <div class="macro-bar"><div class="macro-fill protein" style="width:${bar(protein,proGoal)}%"></div></div>
     </div>
     <div class="macro-row">
-      <div class="label"><span>碳水</span><span class="v">${carb.toFixed(1)} / ${carbGoal} g</span></div>
+      <div class="label"><span>碳水</span><span class="v">${Math.round(carb)} / ${carbGoal} g</span></div>
       <div class="macro-bar"><div class="macro-fill carb" style="width:${bar(carb,carbGoal)}%"></div></div>
     </div>
     <div class="macro-row">
-      <div class="label"><span>脂肪</span><span class="v">${fat.toFixed(1)} / ${fatGoal} g</span></div>
+      <div class="label"><span>脂肪</span><span class="v">${Math.round(fat)} / ${fatGoal} g</span></div>
       <div class="macro-bar"><div class="macro-fill fat" style="width:${bar(fat,fatGoal)}%"></div></div>
     </div>`;
 }
@@ -1382,7 +1382,7 @@ function renderWeekReport(){
     <div class="setting-row"><span class="key">📊 平均摄入</span><span class="val">${avgCal} kcal/天</span></div>
     <div class="setting-row"><span class="key">🔥 总消耗</span><span class="val">${totalBurn} kcal</span></div>
     <div class="setting-row"><span class="key">🏃 运动时长</span><span class="val">${totalMin} 分钟</span></div>
-    <div class="setting-row"><span class="key">💪 蛋白质</span><span class="val">${totalPro.toFixed(0)} g</span></div>
+    <div class="setting-row"><span class="key">💪 蛋白质</span><span class="val">${Math.round(totalPro)} g</span></div>
     <div class="setting-row"><span class="key">⚖️ 体重变化</span><span class="val">${wDelta>0?'-':''}${wDelta} kg</span></div>
   `;
 }
@@ -1603,7 +1603,7 @@ function renderMealPlan(){
       <div style="font-size:28px;">${plan.icon}</div>
       <div style="flex:1;">
         <div style="font-size:16px;font-weight:700;color:var(--text);">${plan.name}</div>
-        <div style="font-size:12px;color:var(--text-soft);">📊 ${totalKcal} kcal · 💪 ${totalPro.toFixed(1)}g 蛋白</div>
+        <div style="font-size:12px;color:var(--text-soft);">📊 ${totalKcal} kcal · 💪 ${Math.round(totalPro)}g 蛋白</div>
       </div>
     </div>
     ${order.filter(g=>groups[g]).map(g=>`
@@ -1672,10 +1672,10 @@ function renderList(which){
   // 渲染总量统计
   if(items.length){
     if(which==='meal'){
-      const totalKcal = items.reduce((s,it)=>s+(+it.kcal||0),0);
-      const totalProtein = items.reduce((s,it)=>s+(+it.protein||0),0);
-      const totalCarb = items.reduce((s,it)=>s+(+it.carb||0),0);
-      const totalFat = items.reduce((s,it)=>s+(+it.fat||0),0);
+      const totalKcal = Math.round(items.reduce((s,it)=>s+(+it.kcal||0),0));
+      const totalProtein = Math.round(items.reduce((s,it)=>s+(+it.protein||0),0));
+      const totalCarb = Math.round(items.reduce((s,it)=>s+(+it.carb||0),0));
+      const totalFat = Math.round(items.reduce((s,it)=>s+(+it.fat||0),0));
       summaryEl.innerHTML = `<div class="summary-bar">
         <div class="s-item"><span class="s-val">${totalKcal}</span><span class="s-lbl">总热量 kcal</span></div>
         <div class="s-item"><span class="s-val">${totalProtein}<small>g</small></span><span class="s-lbl">蛋白质</span></div>
@@ -1683,8 +1683,8 @@ function renderList(which){
         <div class="s-item"><span class="s-val">${totalFat}<small>g</small></span><span class="s-lbl">脂肪</span></div>
       </div>`;
     } else {
-      const totalMin = items.reduce((s,it)=>s+(+it.min||0),0);
-      const totalKcal = items.reduce((s,it)=>s+(+it.kcal||0),0);
+      const totalMin = Math.round(items.reduce((s,it)=>s+(+it.min||0),0));
+      const totalKcal = Math.round(items.reduce((s,it)=>s+(+it.kcal||0),0));
       const types = {};
       items.forEach(it=>{ types[it.type] = (types[it.type]||0) + 1; });
       const typeStr = Object.entries(types).map(([t,c])=>`${t}×${c}`).join(' · ');
