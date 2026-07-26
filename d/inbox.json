@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "date": "2026-07-26",
   "meals": [
     {"type":"早餐","name":"南瓜一牙","kcal":20,"protein":0.5,"carb":5,"fat":0.1},
@@ -14,7 +14,7 @@
   ],
   "workouts": [],
   "weight": null,
-  "goals": {"startW": 66, "targetW": 58, "cal": 1200, "exerciseMin": 30},
+  "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-26 加餐 玉米热狗香肠"
+  "note": "2026-07-26 目标改为1500kcal"
 }
