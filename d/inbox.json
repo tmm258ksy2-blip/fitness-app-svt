@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 19,
   "date": "2026-07-26",
   "meals": [
     {"type":"早餐","name":"南瓜一牙","kcal":20,"protein":0.5,"carb":5,"fat":0.1},
@@ -13,12 +13,12 @@
     {"type":"加餐","name":"玉米热狗香肠 32g","kcal":85,"protein":2.5,"carb":5,"fat":6},
     {"type":"晚餐","name":"水煮娃娃菜","kcal":30,"protein":2,"carb":5,"fat":0.3},
     {"type":"晚餐","name":"马齿苋菜馍六七块","kcal":180,"protein":4,"carb":28,"fat":5},
-    {"type":"晚餐","name":"鸡蛋炒辣椒","kcal":120,"protein":7,"carb":4,"fat":8},
+    {"type":"晚餐","name":"鸡蛋炒辣椒（手掌心量）","kcal":90,"protein":5,"carb":3,"fat":6},
     {"type":"晚餐","name":"绿豆汤一碗","kcal":80,"protein":2,"carb":16,"fat":0.3}
   ],
   "workouts": [],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-26 晚餐"
+  "note": "2026-07-26 修正鸡蛋炒辣椒份量"
 }
