@@ -506,6 +506,7 @@
     <div class="seg" id="mealSeg">
       <button data-d="today" class="active">今天</button>
       <button data-d="yesterday">昨天</button>
+      <button data-d="lastweek">上周</button>
       <button data-d="week">本周</button>
     </div>
     <div class="card">
@@ -525,6 +526,7 @@
     <div class="seg" id="workoutSeg">
       <button data-d="today" class="active">今天</button>
       <button data-d="yesterday">昨天</button>
+      <button data-d="lastweek">上周</button>
       <button data-d="week">本周</button>
     </div>
     <div class="card">
@@ -1097,6 +1099,16 @@ function weekDates(){
   for(let i = monOff; i <= 0; i++) arr.push(shiftDate(t, i));
   return arr;
 }
+function lastWeekDates(){
+  const arr=[]; const t = today();
+  const d = new Date(t);
+  const day = d.getDay();
+  const monOff = day === 0 ? -6 : -(day - 1); // 本周一的偏移
+  const lastMonOff = monOff - 7;  // 上周一
+  const lastSunOff = monOff - 1;  // 上周日
+  for(let i = lastMonOff; i <= lastSunOff; i++) arr.push(shiftDate(t, i));
+  return arr;
+}
 function toast(msg){
   const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
   document.body.appendChild(t); setTimeout(()=>t.remove(),1600);
@@ -1657,11 +1669,15 @@ function resolveDay(key){
 }
 function renderList(which){
   const isWeek = currentDay[which]==='week';
-  const days = isWeek ? weekDates() : [resolveDay(currentDay[which])];
+  const isLastWeek = currentDay[which]==='lastweek';
+  let days;
+  if(isWeek) days = weekDates();
+  else if(isLastWeek) days = lastWeekDates();
+  else days = [resolveDay(currentDay[which])];
   const list = which==='meal' ? 'mealList' : 'workoutList';
   const title = which==='meal' ? 'mealTitle' : 'workoutTitle';
   const summaryEl = document.getElementById(which+'Summary');
-  const rangeLabel = currentDay[which]==='today' ? '今日' : currentDay[which]==='yesterday' ? '昨日' : '本周';
+  const rangeLabel = currentDay[which]==='today' ? '今日' : currentDay[which]==='yesterday' ? '昨日' : currentDay[which]==='lastweek' ? '上周' : '本周';
   document.getElementById(title).textContent = rangeLabel + '饮食';
   if(which==='workout'){
     document.getElementById(title).textContent = rangeLabel + '运动';
@@ -1708,7 +1724,7 @@ function renderList(which){
     return `<div class="list-item">
       <div class="left"><div class="ico">${ico}</div>
         <div class="meta"><div class="name">${it.name||it.type}</div>
-        <div class="sub">${isWeek?it._d.slice(5)+' · ':''}${it.type} · ${which==='meal'?((it.protein||0)+'g 蛋白'):(it.min+' min')}</div></div>
+        <div class="sub">${(isWeek||isLastWeek)?it._d.slice(5)+' · ':''}${it.type} · ${which==='meal'?((it.protein||0)+'g 蛋白'):(it.min+' min')}</div></div>
       </div>
       <div class="right">
         <div class="kcal">${it.kcal} kcal</div>
