@@ -1541,11 +1541,12 @@ function renderFoodTags(){
   });
 }
 
-/* —— 渲染今日推荐锻炼 —— */
+/* —— 渲染今日推荐锻炼（含明日预告）—— */
 function renderWorkoutPlan(){
   const day = new Date().getDay();
   const plan = WORKOUT_PLANS[day];
   if(!plan) return;
+  const tomorrow = WORKOUT_PLANS[(day+1) % 7];
   const el = document.getElementById('workoutPlanContent');
   el.innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -1572,6 +1573,19 @@ function renderWorkoutPlan(){
       </button>
     ` : ''}
     <button class="btn" id="logWorkoutPlan" style="margin-top:8px;">✅ 一键记录今日锻炼</button>
+    ${tomorrow ? `
+      <div style="margin-top:16px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.5);border:1px dashed rgba(255,138,171,0.3);">
+        <div style="font-size:12px;font-weight:700;color:var(--pink-4);margin-bottom:4px;">📅 明日预告</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:24px;">${tomorrow.icon}</span>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:var(--text);">${tomorrow.title}</div>
+            <div style="font-size:11px;color:var(--text-soft);">⏱ ${tomorrow.duration} · 🔥 ${tomorrow.kcal} kcal</div>
+          </div>
+          ${tomorrow.video ? `<button class="btn" id="playTmrwVideo" style="padding:6px 14px;font-size:12px;background:var(--pink-4);">▶ 预览</button>` : ''}
+        </div>
+      </div>
+    ` : ''}
   `;
   if(plan.video){
     document.getElementById('playWorkoutVideo').onclick = ()=>{
@@ -1598,6 +1612,18 @@ function renderWorkoutPlan(){
     save(); render();
     toast(`已记录 ${plan.title} ${plan.min}min 🔥`);
   };
+  // 明日预告预览视频
+  const tmrwBtn = document.getElementById('playTmrwVideo');
+  if(tmrwBtn && tomorrow && tomorrow.video){
+    tmrwBtn.onclick = ()=>{
+      const iframe = document.getElementById('ytIframe');
+      iframe.src = `https://player.bilibili.com/player.html?bvid=${tomorrow.video}&page=1&autoplay=1&high_quality=1&danmaku=0`;
+      document.getElementById('ytTitle').textContent = '📅 ' + tomorrow.videoTitle;
+      document.getElementById('ytPlayer').classList.add('show');
+      document.getElementById('ytPlayer').classList.add('expanded');
+      document.getElementById('ytToggle').textContent = '⤡';
+    };
+  }
 }
 
 /* —— 渲染今日推荐饮食 —— */
