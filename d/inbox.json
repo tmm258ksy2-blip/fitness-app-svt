@@ -1,5 +1,5 @@
 {
-  "version": 25,
+  "version": 26,
   "date": "2026-07-27",
   "meals": [
     {"type":"早餐","name":"葱花饼六分之一","kcal":75,"protein":2,"carb":9,"fat":3},
@@ -14,10 +14,11 @@
   ],
   "workouts": [
     {"type":"力量训练","name":"8字环训练 W头后下拉100个+划船40个+手臂后拉40个","min":15,"kcal":52},
-    {"type":"力量训练","name":"肩背跟练20min+罗马尼亚硬拉10+保加利亚蹲20","min":24,"kcal":127}
+    {"type":"力量训练","name":"肩背跟练+硬拉+保加利亚蹲","min":24,"kcal":80},
+    {"type":"快走","name":"散步","min":10,"kcal":28}
   ],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-27 增加肩背训练+硬拉+保加利亚蹲"
+  "note": "2026-07-27 修正运动消耗+加散步"
 }
