@@ -1,5 +1,5 @@
 {
-  "version": 23,
+  "version": 24,
   "date": "2026-07-27",
   "meals": [
     {"type":"早餐","name":"葱花饼六分之一","kcal":75,"protein":2,"carb":9,"fat":3},
@@ -8,7 +8,9 @@
     {"type":"午餐","name":"青菜鸡蛋汤一碗","kcal":60,"protein":4,"carb":3,"fat":3},
     {"type":"晚餐","name":"烤巴沙鱼半个","kcal":140,"protein":20,"carb":0,"fat":6},
     {"type":"晚餐","name":"煎饼半个卷土豆","kcal":125,"protein":4,"carb":22,"fat":3},
-    {"type":"晚餐","name":"炒冬瓜","kcal":40,"protein":1,"carb":6,"fat":1}
+    {"type":"晚餐","name":"炒冬瓜","kcal":40,"protein":1,"carb":6,"fat":1},
+    {"type":"晚餐","name":"半个馍加辣子","kcal":90,"protein":3,"carb":15,"fat":3},
+    {"type":"晚餐","name":"绿豆汤两口","kcal":15,"protein":0,"carb":3,"fat":0}
   ],
   "workouts": [
     {"type":"力量训练","name":"8字环训练 W头后下拉100个+划船40个+手臂后拉40个","min":15,"kcal":52}
@@ -16,5 +18,5 @@
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-27 晚餐"
+  "note": "2026-07-27 晚餐加餐 馍加辣子+绿豆汤"
 }
