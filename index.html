@@ -841,10 +841,11 @@ const SVT_SONGS = [
 /* —— 锻炼计划库（按星期几）—— */
 // 周一到周日 0=周日 1=周一...6=周六
 const WORKOUT_PLANS = {
-  1: { // 周一
+  // 周一到周日 getDay(): 0=周日 1=周一...6=周六
+  1: { // 周一 · 工作忙 → 腿拉伸舒缓
     title:'腿部拉伸舒缓', icon:'🦵', duration:'8 分钟', tag:'舒缓',
     type:'瑜伽', min:8, kcal:32,
-    video:'BV1mkg16qEzW', videoTitle:'14组晨间舒展拉伸跟练',
+    video:'BV1mkg16qEzW', videoTitle:'晨间舒展拉伸跟练',
     items:[
       {name:'猫牛式', detail:'跪姿交替弓背塌腰 ×15'},
       {name:'下犬式', detail:'保持 30 秒 ×2'},
@@ -853,81 +854,80 @@ const WORKOUT_PLANS = {
       {name:'腿部靠墙倒立', detail:'靠墙躺 3 分钟，促进血液回流'}
     ]
   },
-  2: { // 周二
-    title:'腰背舒缓', icon:'🌿', duration:'8 分钟', tag:'舒缓',
-    type:'瑜伽', min:8, kcal:32,
-    video:'BV1mkg16qEzW', videoTitle:'14组晨间舒展拉伸跟练',
-    items:[
-      {name:'猫牛式', detail:'跪姿交替弓背塌腰 ×15'},
-      {name:'婴儿式', detail:'跪趴前伸保持 45 秒'},
-      {name:'眼镜蛇式', detail:'俯卧撑起 30 秒 ×3'},
-      {name:'跪姿转体', detail:'左右各 10 次'},
-      {name:'臀桥', detail:'仰卧抬臀 ×15'}
-    ]
-  },
-  3: { // 周三
-    title:'肩颈放松', icon:'💆', duration:'8 分钟', tag:'舒缓',
+  2: { // 周二 · 工作忙 → 肩背拉伸（久坐族）
+    title:'肩背拉伸舒缓', icon:'🌿', duration:'8 分钟', tag:'舒缓',
     type:'瑜伽', min:8, kcal:32,
     video:'BV1VhMg63E2K', videoTitle:'帕梅拉肩颈放松改善圆肩',
     items:[
       {name:'颈部环绕', detail:'顺时针逆时针各 10 圈'},
       {name:'肩部环绕', detail:'前后各 15 圈'},
-      {name:'手臂画圈', detail:'大小圈各 15 次'},
       {name:'双手背后交握', detail:'展开胸腔 30 秒 ×2'},
-      {name:'靠墙天使', detail:'靠墙滑动手臂 ×10'}
+      {name:'靠墙天使', detail:'靠墙滑动手臂 ×10'},
+      {name:'跪姿婴儿式', detail:'跪趴前伸保持 45 秒'}
     ]
   },
-  4: { // 周四
-    title:'臀腿强化 + 有氧', icon:'🍑', duration:'35 分钟', tag:'强化',
-    type:'力量训练', min:35, kcal:200,
-    video:'BV1yGKF6dES9', videoTitle:'居家臀腿训练无器械跟练',
-    items:[
-      {name:'深蹲', detail:'15 次 ×4 组'},
-      {name:'弓步蹲', detail:'左右各 12 次 ×3 组'},
-      {name:'臀桥', detail:'20 次 ×4 组'},
-      {name:'侧抬腿', detail:'左右各 20 次 ×3 组'},
-      {name:'快走/跳绳', detail:'15 分钟有氧'}
-    ]
-  },
-  5: { // 周五
-    title:'肩背强化 + 有氧', icon:'💪', duration:'35 分钟', tag:'强化',
-    type:'力量训练', min:35, kcal:210,
+  3: { // 周三 · 工作忙 → 全身舒缓
+    title:'全身舒缓拉伸', icon:'💆', duration:'8 分钟', tag:'舒缓',
+    type:'瑜伽', min:8, kcal:32,
     video:'BV1vu411e7fC', videoTitle:'10分钟缓解肩颈酸痛',
     items:[
-      {name:'跪姿俯卧撑', detail:'12 次 ×4 组'},
-      {name:'哑铃划船', detail:'15 次 ×4 组'},
-      {name:'肩部推举', detail:'12 次 ×4 组'},
-      {name:'飞鸟', detail:'15 次 ×3 组'},
-      {name:'跳绳/HIIT', detail:'15 分钟有氧'}
+      {name:'颈部拉伸', detail:'左右各 15 秒'},
+      {name:'手臂画圈', detail:'大小圈各 15 次'},
+      {name:'坐姿转体', detail:'左右各 10 次'},
+      {name:'站姿侧屈', detail:'左右各 15 秒'},
+      {name:'猫牛式', detail:'跪姿交替弓背塌腰 ×15'}
     ]
   },
-  6: { // 周六
-    title:'腰腹核心 + 有氧', icon:'🔥', duration:'35 分钟', tag:'强化',
-    type:'力量训练', min:35, kcal:195,
+  4: { // 周四 · 有力气 → 上肢力量（背+肩+手臂）
+    title:'上肢力量（背+肩+手臂）', icon:'💪', duration:'35 分钟', tag:'强化',
+    type:'力量训练', min:35, kcal:160,
+    video:'BV14a4y1W76f', videoTitle:'帕梅拉15min上肢训练（可跟练）',
+    items:[
+      {name:'弹力带划船', detail:'重点练背中束 ×15×4'},
+      {name:'俯身飞鸟', detail:'练薄背+改善圆肩 ×15×4'},
+      {name:'坐姿推举', detail:'练肩膀显腰细 ×12×4'},
+      {name:'侧平举', detail:'三角肌中束 ×15×4'},
+      {name:'三头臂屈伸', detail:'告别拜拜肉 ×15×4'}
+    ]
+  },
+  5: { // 周五 · 有力气 → 臀部塑形（不粗腿）
+    title:'臀部塑形（不粗腿）', icon:'🍑', duration:'35 分钟', tag:'塑形',
+    type:'力量训练', min:35, kcal:160,
+    video:'BV1yGKF6dES9', videoTitle:'居家臀部训练无器械跟练',
+    items:[
+      {name:'臀桥', detail:'20 次 ×4 组（提臀不粗腿）'},
+      {name:'跪姿后抬腿', detail:'左右各 20 次 ×3 组'},
+      {name:'侧卧抬腿', detail:'左右各 20 次 ×3 组'},
+      {name:'蚌式开合', detail:'练臀中肌，稳定骨盆 ×15×3'},
+      {name:'快走', detail:'20 分钟有氧燃脂'}
+    ]
+  },
+  6: { // 周六 · 有力气 → 上肢强化 + 有氧
+    title:'上肢强化 + 有氧', icon:'🔥', duration:'40 分钟', tag:'强化',
+    type:'力量训练', min:40, kcal:200,
+    video:'BV1bP4y1M7bn', videoTitle:'帕梅拉10min上肢训练+负重',
+    items:[
+      {name:'弹力带划船', detail:'背中束 ×15×4'},
+      {name:'超人式', detail:'趴姿上下抬上身 ×15×3'},
+      {name:'侧平举', detail:'三角肌中束 ×15×4'},
+      {name:'窄距俯卧撑', detail:'练三头+胸中缝 ×8×3'},
+      {name:'快走/散步', detail:'20 分钟有氧燃脂'}
+    ]
+  },
+  0: { // 周日 · 有力气 → 核心+臀部+有氧
+    title:'核心+臀部综合', icon:'✨', duration:'30 分钟', tag:'塑形',
+    type:'力量训练', min:30, kcal:150,
     video:'BV1YN8wzXEt8', videoTitle:'帕梅拉10分钟燃腹训练',
     items:[
-      {name:'卷腹', detail:'20 次 ×4 组'},
-      {name:'死虫式', detail:'左右各 12 次 ×3 组'},
-      {name:'俄罗斯转体', detail:'20 次 ×3 组'},
-      {name:'平板支撑', detail:'45 秒 ×4 组'},
-      {name:'快走/骑行', detail:'15 分钟有氧'}
-    ]
-  },
-  0: { // 周日
-    title:'全身循环 + 有氧', icon:'✨', duration:'40 分钟', tag:'强化',
-    type:'力量训练', min:40, kcal:240,
-    video:'BV1Xt421J7yW', videoTitle:'20分钟居家HIIT全身燃脂',
-    items:[
-      {name:'深蹲', detail:'15 次 ×3 组'},
-      {name:'跪姿俯卧撑', detail:'12 次 ×3 组'},
-      {name:'卷腹', detail:'20 次 ×3 组'},
-      {name:'弓步蹲', detail:'左右各 10 次 ×3 组'},
-      {name:'快走/跳绳', detail:'20 分钟有氧'}
+      {name:'平板支撑', detail:'核心稳定 45 秒 ×4'},
+      {name:'臀桥', detail:'臀肌激活 20×4'},
+      {name:'侧抬腿', detail:'臀中肌 左右各 20×3'},
+      {name:'死虫式', detail:'核心+协调 左右各 12×3'},
+      {name:'散步/快走', detail:'15 分钟有氧燃脂'}
     ]
   }
 };
 
-/* —— 饮食推荐方案（3套轮换，基于1200kcal/86g蛋白质）—— */
 const MEAL_PLANS = [
   { // 方案A：高蛋白低碳
     name:'高蛋白低碳日', icon:'🥗',
