@@ -549,6 +549,7 @@
         <span class="big" id="curWeight">--</span><span class="unit">kg</span>
         <span class="badge down" id="weightDelta">--</span>
       </div>
+      <div id="predictionBox" style="font-size:13px;color:var(--text-soft);text-align:center;margin:4px 0 6px;padding:6px 10px;border-radius:10px;background:rgba(255,138,171,0.1);"></div>
       <div class="chart-wrap"><canvas id="weightChart"></canvas></div>
       <button class="btn" style="margin-top:14px;" data-act="add-weight">+ 记录今天体重</button>
     </div>
@@ -1782,6 +1783,25 @@ function renderWeight(){
     tag.className = 'badge '+(diff<=0?'down':'');
   } else {
     document.getElementById('weightDelta').textContent = '--';
+  }
+  // 体重预测（基于今天饮食+运动+BMR）
+  const t = today();
+  const predictKg = cur ? cur.kg : (+state.profile.weight || 66);
+  const eat = (state.meals[t]||[]).reduce((s,m)=>s+(+m.kcal||0),0);
+  const burn = (state.workouts[t]||[]).reduce((s,w)=>s+(+w.kcal||0),0);
+  const bmr = state.profile.bmr || 1398;
+  const neat = 250; // 日常活动消耗（久坐办公室估算）
+  const totalBurn = bmr + burn + neat;
+  const deficit = totalBurn - eat; // 正值=消耗>摄入，会瘦
+  const kgChange = deficit / 7700;
+  const predEl = document.getElementById('predictionBox');
+  if(eat > 0){
+    const predicted = Math.round((predictKg - kgChange) * 10) / 10;
+    const emoji = kgChange > 0.02 ? '📉' : (kgChange < -0.02 ? '📈' : '➖');
+    const note = kgChange > 0.02 ? '预计明日会瘦' : (kgChange < -0.02 ? '预计明日微涨' : '预计维持稳定');
+    predEl.innerHTML = `${emoji} 今天 ${eat} 吃 − ${burn} 动 = 缺口 ${Math.round(deficit)} kcal · ${note} → <strong>${predicted.toFixed(1)} kg</strong>`;
+  } else {
+    predEl.innerHTML = '📝 记录今天的饮食和运动后，这里会预测明日体重';
   }
   // 图表
   drawChart(w.slice(-30));
