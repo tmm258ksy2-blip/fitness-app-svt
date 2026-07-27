@@ -1574,15 +1574,18 @@ function renderWorkoutPlan(){
     ` : ''}
     <button class="btn" id="logWorkoutPlan" style="margin-top:8px;">✅ 一键记录今日锻炼</button>
     ${tomorrow ? `
-      <div style="margin-top:16px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.5);border:1px dashed rgba(255,138,171,0.3);">
-        <div style="font-size:12px;font-weight:700;color:var(--pink-4);margin-bottom:4px;">📅 明日预告</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:24px;">${tomorrow.icon}</span>
-          <div style="flex:1;">
-            <div style="font-size:13px;font-weight:600;color:var(--text);">${tomorrow.title}</div>
-            <div style="font-size:11px;color:var(--text-soft);">⏱ ${tomorrow.duration} · 🔥 ${tomorrow.kcal} kcal</div>
+      <div style="margin-top:16px;padding:14px;border-radius:12px;background:linear-gradient(135deg,rgba(166,210,236,0.2),rgba(255,138,171,0.15));border:1px dashed rgba(255,138,171,0.4);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+          <span style="font-size:12px;font-weight:700;color:var(--pink-4);">📅 明日预告</span>
+          <span style="font-size:11px;color:var(--text-soft);">（明天 ${['周日','周一','周二','周三','周四','周五','周六'][(day+1)%7]}）</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="font-size:28px;flex-shrink:0;">${tomorrow.icon}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${tomorrow.title}</div>
+            <div style="font-size:11px;color:var(--text-soft);margin-top:3px;">⏱ ${tomorrow.duration} · 🔥 ${tomorrow.kcal} kcal · ${tomorrow.tag}</div>
           </div>
-          ${tomorrow.video ? `<button class="btn" id="playTmrwVideo" style="padding:6px 14px;font-size:12px;background:var(--pink-4);">▶ 预览</button>` : ''}
+          ${tomorrow.video ? `<button id="playTmrwVideo" style="flex-shrink:0;background:rgba(255,138,171,0.15);color:var(--pink-4);border:1px solid rgba(255,138,171,0.3);padding:6px 14px;border-radius:16px;font-size:12px;cursor:pointer;white-space:nowrap;">▶ 预览</button>` : ''}
         </div>
       </div>
     ` : ''}
