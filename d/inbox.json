@@ -1,13 +1,17 @@
 {
-  "version": 21,
+  "version": 22,
   "date": "2026-07-27",
   "meals": [
     {"type":"早餐","name":"葱花饼六分之一","kcal":75,"protein":2,"carb":9,"fat":3},
-    {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10}
+    {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
+    {"type":"午餐","name":"煎饼两个（夹土豆丝辣椒炒蛋）","kcal":580,"protein":20,"carb":78,"fat":19},
+    {"type":"午餐","name":"青菜鸡蛋汤一碗","kcal":60,"protein":4,"carb":3,"fat":3}
   ],
-  "workouts": [],
+  "workouts": [
+    {"type":"力量训练","name":"8字环训练 W头后下拉100个+划船40个+手臂后拉40个","min":15,"kcal":52}
+  ],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-27 早餐"
+  "note": "2026-07-27 午餐+8字环训练"
 }
