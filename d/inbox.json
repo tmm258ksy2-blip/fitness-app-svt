@@ -1,14 +1,14 @@
 {
-  "version": 27,
+  "version": 28,
   "date": "2026-07-28",
   "meals": [
     {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
-    {"type":"早餐","name":"青菜包子一个","kcal":160,"protein":5,"carb":28,"fat":3},
+    {"type":"早餐","name":"小青菜包子一个","kcal":100,"protein":3,"carb":18,"fat":2},
     {"type":"早餐","name":"豆浆300ml","kcal":90,"protein":9,"carb":4,"fat":4}
   ],
   "workouts": [],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-28 早餐"
+  "note": "2026-07-28 早餐（修正青菜包子大小）"
 }
