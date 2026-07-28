@@ -235,6 +235,19 @@
   .water-bar-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--text-soft);}
   .water-info{font-size:11px;color:var(--text-light);text-align:center;font-weight:600;white-space:nowrap;flex-shrink:0;}
   .water-info b{color:var(--blue-2);font-size:13px;}
+
+  /* 贴纸墙 */
+  .sticker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;}
+  .sticker-item{
+    aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:18px;font-weight:700;color:#fff;position:relative;overflow:hidden;transition:transform .2s;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  }
+  .sticker-item:active{transform:scale(.92);}
+  .sticker-item .s-name{font-size:7px;font-weight:600;margin-top:1px;opacity:.85;}
+  .sticker-item.hidden{animation:glow 2s infinite;}
+  @keyframes glow{0%,100%{box-shadow:0 0 6px rgba(255,215,0,0.3);}50%{box-shadow:0 0 14px rgba(255,215,0,0.6);}}
+  .sticker-empty{text-align:center;font-size:12px;color:var(--text-light);padding:12px 0;}
   /* 周打卡 */
   .water-week{display:flex;justify-content:space-around;margin:8px 0 0;padding:8px 2px;border-radius:8px;background:rgba(255,255,255,0.35);}
   .water-week .ww-day{text-align:center;min-width:22px;}
@@ -538,7 +551,6 @@
       <h3><span class="dot"></span><span id="workoutTitle">今日运动</span></h3>
       <div id="workoutSummary"></div>
       <div id="workoutList"></div>
-      <button class="btn" style="margin-top:10px;" data-act="add-workout">+ 添加运动</button>
     </div>
     <div class="card" id="workoutPlanCard">
       <h3><span class="dot"></span>今日推荐锻炼</h3>
@@ -596,6 +608,10 @@
     <div class="card">
       <h3><span class="dot"></span>本周小结</h3>
       <div id="weekReport"></div>
+    </div>
+    <div class="card">
+      <h3><span class="dot"></span>💎 SVT 贴纸墙</h3>
+      <div id="stickerWall" style="min-height:50px;"></div>
     </div>
     <div class="card">
       <h3><span class="dot"></span>数据</h3>
@@ -792,6 +808,7 @@ const defaultState = ()=>({
   waterGoal: 2000,      // 每日喝水目标 ml
   achievements:{},     // {achievementId: true}
   avatars:[],          // 头像库 [{name, src}] 空数组时用默认 svt.jpg
+  stickers:[],         // 收集的 SVT 贴纸 [{id, name, emoji, color, rarity, earnedAt}]
   meta:{created:today()}
 });
 let state = load();
@@ -808,7 +825,8 @@ function load(){
       water: s.water || {},
       waterGoal: s.waterGoal || 2000,
       achievements: s.achievements || {},
-      avatars: s.avatars || []
+      avatars: s.avatars || [],
+      stickers: s.stickers || []
     };
   }catch(e){ return defaultState(); }
 }
@@ -833,6 +851,35 @@ const SVT_SONGS = [
   {name:'Ready to Love',      bv:'BV1964y1X7HJ'},
   {name:'_WORLD',             bv:'BV1PU4y1i7qh'}
 ];
+
+/* —— SVT 贴纸库（13成员+隐藏款） —— */
+const SVT_STICKERS = [
+  // 普通款（12张）
+  {id:'scoups',  name:'S.Coups',    emoji:'🐯', color:'#e74c3c', rarity:'common'},
+  {id:'jeonghan',name:'Jeonghan',   emoji:'🦌', color:'#f39c12', rarity:'common'},
+  {id:'joshua',  name:'Joshua',     emoji:'🌸', color:'#e8a0bf', rarity:'common'},
+  {id:'hoshi',   name:'Hoshi',      emoji:'🐯', color:'#ff6b35', rarity:'common'},
+  {id:'wonwoo',  name:'Wonwoo',     emoji:'🐱', color:'#2d3436', rarity:'common'},
+  {id:'woozi',   name:'Woozi',      emoji:'🎵', color:'#6c5ce7', rarity:'common'},
+  {id:'mingyu',  name:'Mingyu',     emoji:'🐶', color:'#00b894', rarity:'common'},
+  {id:'dk',      name:'DK',         emoji:'☀️', color:'#fdcb6e', rarity:'common'},
+  {id:'seungkwan',name:'Seungkwan', emoji:'🍊', color:'#e17055', rarity:'common'},
+  {id:'vernon',  name:'Vernon',     emoji:'🌍', color:'#0984e3', rarity:'common'},
+  {id:'the8',    name:'The8',       emoji:'🎨', color:'#a29bfe', rarity:'common'},
+  {id:'dino',    name:'Dino',       emoji:'🦕', color:'#55efc4', rarity:'common'},
+  // 隐藏款（3张，概率较低）
+  {id:'group',   name:'全员合照',   emoji:'🌟', color:'#ff8aab', rarity:'hidden'},
+  {id:'unit',    name:'嘻哈队',     emoji:'🎤', color:'#636e72', rarity:'hidden'},
+  {id:'carat',   name:'캐럿이 ♥',   emoji:'💎', color:'#b8306a', rarity:'hidden'},
+];
+function pickRandomSticker(){
+  const hidden = SVT_STICKERS.filter(s=>s.rarity==='hidden');
+  const common = SVT_STICKERS.filter(s=>s.rarity==='common');
+  // 隐藏款 15% 概率
+  const isHidden = Math.random() < 0.15;
+  const pool = isHidden ? hidden : common;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 
 /* —— 锻炼计划库（按星期几）—— */
 // 周一到周日 0=周日 1=周一...6=周六
@@ -1158,6 +1205,8 @@ function render(){
   renderMacro(protein, carb, fat);
   // 成就墙
   renderBadges();
+  // 贴纸墙
+  renderStickers();
   // 本周小结
   renderWeekReport();
 
@@ -1319,13 +1368,15 @@ function renderWater(){
   const claimBtn = document.getElementById('claimSticker');
   if(claimBtn){
     claimBtn.onclick = ()=>{
+      const sticker = pickRandomSticker();
+      state.stickers.push({...sticker, earnedAt:Date.now()});
       state.achievements[stickerKey] = true;
-      save(); renderWater();
-      // 奖励弹窗
-      document.getElementById('rewardIcon').textContent = '🌟';
-      document.getElementById('rewardTitle').textContent = 'SVT 贴纸 +1！';
-      document.getElementById('rewardSub').textContent = `本周喝水 ${points}/7 天达标 🎉`;
-      document.getElementById('rewardQuote').textContent = '👤 "一直到最后都要幸福吧" — SEVENTEEN';
+      save(); renderWater(); renderStickers();
+      const isHidden = sticker.rarity === 'hidden';
+      document.getElementById('rewardIcon').textContent = sticker.emoji;
+      document.getElementById('rewardTitle').textContent = isHidden ? '🌟 隐藏款！' : '💎 SVT 贴纸';
+      document.getElementById('rewardSub').textContent = sticker.name + (isHidden ? ' ★稀有★' : '') + ' · 喝水 ' + points + '/7 达标 🎉';
+      document.getElementById('rewardQuote').textContent = isHidden ? '🎊 隐藏款！运气爆棚！' : '继续喝水，下周再来一张！';
       document.getElementById('rewardClose').onclick = ()=>{
         document.getElementById('rewardMask').style.display = 'none';
         renderWater();
@@ -1421,6 +1472,26 @@ function renderBadges(){
       <div>${a.name}</div>
     </div>`;
   }).join('');
+}
+
+/* —— SVT 贴纸墙 —— */
+function renderStickers(){
+  const el = document.getElementById('stickerWall');
+  if(!el) return;
+  const stickers = state.stickers || [];
+  if(!stickers.length){
+    el.innerHTML = '<div class="sticker-empty">喝水达标即可领取 SVT 贴纸 💧→💎</div>';
+    return;
+  }
+  const total = SVT_STICKERS.length;
+  const unique = new Set(stickers.map(s=>s.id));
+  el.innerHTML = `<div style="font-size:11px;color:var(--text-soft);margin-bottom:8px;">已收集 ${unique.size}/${total} 张</div>
+    <div class="sticker-grid">${stickers.slice().reverse().map(s=>`
+      <div class="sticker-item ${s.rarity==='hidden'?'hidden':''}" style="background:${s.color};" title="${s.name}${s.rarity==='hidden'?' ★稀有★':''}">
+        <span style="font-size:20px;">${s.emoji}</span>
+        <span class="s-name">${s.name}</span>
+      </div>
+    `).join('')}</div>`;
 }
 
 /* —— 本周小结 —— */
