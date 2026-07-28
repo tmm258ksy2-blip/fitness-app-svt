@@ -231,18 +231,25 @@
   .streak-bar .num{font-size:20px;font-weight:800;color:var(--pink-4);}
   .streak-bar .txt{font-size:12px;color:var(--text-soft);font-weight:600;}
 
-  /* 喝水记录 */
-  .water-row{display:flex;align-items:center;gap:10px;}
-  .water-cups{display:flex;gap:4px;flex:1;flex-wrap:wrap;}
-  .water-cup{
-    width:26px;height:30px;border-radius:4px 4px 12px 12px;cursor:pointer;
-    background:rgba(166,210,236,0.2);border:1.5px solid rgba(166,210,236,0.4);
-    display:flex;align-items:center;justify-content:center;font-size:13px;transition:.15s;
-  }
-  .water-cup.filled{background:linear-gradient(180deg,#a6d2ec,#7fb8dc);border-color:#7fb8dc;}
-  .water-cup:active{transform:scale(.9);}
-  .water-info{font-size:12px;color:var(--text-soft);text-align:right;min-width:50px;}
-  .water-info b{color:var(--blue-2);font-size:15px;}
+  /* 喝水记录（ml版） */
+  .water-row{display:flex;align-items:center;gap:12px;}
+  .water-bar-wrap{flex:1;min-width:0;}
+  .water-bar-bg{height:16px;border-radius:10px;background:rgba(166,210,236,0.2);overflow:hidden;position:relative;border:1px solid rgba(166,210,236,0.3);}
+  .water-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#a6d2ec,#7fb8dc);transition:width .4s;min-width:0;}
+  .water-bar-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text);}
+  .water-add{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px;}
+  .water-add button{background:rgba(166,210,236,0.2);border:1px solid rgba(166,210,236,0.3);border-radius:14px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--text-soft);font-weight:600;transition:.15s;}
+  .water-add button:active{background:rgba(166,210,236,0.4);transform:scale(.96);}
+  .water-add input{width:50px;border:1px solid rgba(166,210,236,0.3);border-radius:10px;padding:4px 8px;font-size:12px;background:rgba(255,255,255,0.5);outline:none;color:var(--text);text-align:center;}
+  .water-info{font-size:12px;color:var(--text-soft);text-align:center;font-weight:600;white-space:nowrap;}
+  .water-info b{color:var(--blue-2);font-size:16px;}
+  /* 周打卡 */
+  .water-week{display:flex;justify-content:space-around;margin:10px 0 0;padding:10px 4px;border-radius:10px;background:rgba(255,255,255,0.5);}
+  .water-week .ww-day{text-align:center;min-width:28px;}
+  .water-week .ww-label{font-size:10px;color:var(--text-light);}
+  .water-week .ww-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:3px auto;font-size:11px;border:1.5px solid rgba(166,210,236,0.3);background:rgba(255,255,255,0.4);}
+  .water-week .ww-dot.done{background:#7fb8dc;border-color:#7fb8dc;color:#fff;}
+  .water-week .ww-dot.today{border-color:var(--blue-2);box-shadow:0 0 0 2px rgba(166,210,236,0.3);}
 
   /* 宏营养素条 */
   .macro-row{margin:8px 0;}
@@ -475,9 +482,20 @@
     <div class="card">
       <h3><span class="dot"></span>喝水</h3>
       <div class="water-row">
-        <div class="water-cups" id="waterCups"></div>
+        <span style="font-size:22px;">💧</span>
+        <div class="water-bar-wrap">
+          <div class="water-bar-bg"><div class="water-bar-fill" id="waterFill" style="width:0%;"></div><div class="water-bar-text" id="waterLabel">0 / 2000 ml</div></div>
+          <div class="water-add">
+            <button data-w="100">+100ml</button>
+            <button data-w="200">+200ml</button>
+            <button data-w="500">+500ml</button>
+            <input id="waterCustom" type="number" inputmode="numeric" placeholder="自定" min="1"/>
+            <button id="waterAddBtn" style="background:rgba(166,210,236,0.35);border-color:var(--blue-2);">➕</button>
+          </div>
+        </div>
         <div class="water-info" id="waterInfo"></div>
       </div>
+      <div id="waterWeekScore"></div>
     </div>
 
     <div class="card">
@@ -778,7 +796,7 @@ const defaultState = ()=>({
     bmr:1398,  // Mifflin-St Jeor: 10*66 + 6.25*170 - 5*33 - 161
     note:'产后5年'
   },
-  habits:['喝水 8杯','不吃零食','23点前睡觉'],
+  habits:['喝水 2000ml','不吃零食','23点前睡觉'],
   checks:{},           // {date: {habitIndex:true}}
   meals:{},            // {date:[{id,type,name,kcal,protein,ts}]}
   workouts:{},         // {date:[{id,type,min,kcal,ts}]}
@@ -795,7 +813,8 @@ const defaultState = ()=>({
     {name:'西兰花', kcal:35, protein:4},
     {name:'牛油果', kcal:160, protein:2}
   ],
-  water:{},            // {date: 杯数}
+  water:{},            // {date: ml数}
+  waterGoal: 2000,      // 每日喝水目标 ml
   achievements:{},     // {achievementId: true}
   avatars:[],          // 头像库 [{name, src}] 空数组时用默认 svt.jpg
   meta:{created:today()}
@@ -812,6 +831,7 @@ function load(){
       profile:{...defaultState().profile, ...(s.profile||{})},
       foodTags: s.foodTags || defaultState().foodTags,
       water: s.water || {},
+      waterGoal: s.waterGoal || 2000,
       achievements: s.achievements || {},
       avatars: s.avatars || []
     };
@@ -1264,25 +1284,88 @@ function renderStreak(){
   }
 }
 
-/* —— 喝水记录 —— */
+/* —— 喝水记录（ml版 + 周打卡 + SVT贴纸） —— */
 function renderWater(){
   const t = today();
-  const cups = state.water[t] || 0;
-  const goal = 8;
-  const el = document.getElementById('waterCups');
-  el.innerHTML = Array.from({length:goal}, (_,i)=>
-    `<div class="water-cup ${i<cups?'filled':''}" data-cup="${i}">${i<cups?'💧':'🥛'}</div>`
-  ).join('');
-  el.querySelectorAll('.water-cup').forEach(c=>{
-    c.onclick = ()=>{
-      const idx = +c.dataset.cup;
-      state.water[t] = idx < cups ? idx : idx + 1; // 点击已满的杯子=减到那杯，点击空的=填到那杯
-      if(idx + 1 === cups) state.water[t] = idx; // 点最后一个满的=减1
+  const ml = state.water[t] || 0;
+  const goal = state.waterGoal || 2000;
+  const pct = Math.min(ml / goal * 100, 100);
+
+  document.getElementById('waterFill').style.width = pct + '%';
+  document.getElementById('waterLabel').textContent = `${ml} / ${goal} ml`;
+  document.getElementById('waterInfo').innerHTML = pct >= 100 ? '💧 达标!' : `<b>${Math.round(goal - ml)}</b> ml 还差`;
+
+  // 快速加水和自定义
+  document.querySelectorAll('[data-w]').forEach(btn => {
+    btn.onclick = () => {
+      state.water[t] = (state.water[t] || 0) + +btn.dataset.w;
+      if(state.water[t] > 5000) state.water[t] = 5000; // 上限
       save(); renderWater(); renderStreak();
-      if(state.water[t] === goal) toast('今日喝水达标 💧');
+      if(state.water[t] >= goal) toast('今日喝水达标 💧');
     };
   });
-  document.getElementById('waterInfo').innerHTML = `<b>${cups}</b>/${goal} 杯`;
+  document.getElementById('waterAddBtn').onclick = () => {
+    const inp = document.getElementById('waterCustom');
+    const v = +inp.value;
+    if(!v || v < 1) return;
+    state.water[t] = (state.water[t] || 0) + v;
+    if(state.water[t] > 5000) state.water[t] = 5000;
+    inp.value = '';
+    save(); renderWater(); renderStreak();
+    if(state.water[t] >= goal) toast('今日喝水达标 💧');
+  };
+
+  // 本周打卡 + SVT 贴纸
+  const weekEl = document.getElementById('waterWeekScore');
+  const dayNames = ['一','二','三','四','五','六','日'];
+  // 本周周一 ~ 周日
+  const d = new Date(t);
+  const day = d.getDay();
+  const monOff = day === 0 ? -6 : -(day - 1);
+  const todayOff = 0; // today's offset
+  const sunOff = day === 0 ? 0 : 6 - day;
+  let points = 0;
+  const daysHtml = [];
+  for(let i = monOff; i <= sunOff; i++){
+    const dd = shiftDate(t, i);
+    const mlDay = state.water[dd] || 0;
+    const done = mlDay >= goal;
+    if(done) points++;
+    const isToday = i === 0;
+    const cls = done ? 'ww-dot done' : (isToday ? 'ww-dot today' : 'ww-dot');
+    const icon = done ? '✅' : (isToday ? '💧' : '');
+    daysHtml.push(`<div class="ww-day"><div class="ww-label">${dayNames[(i+7)%7]}</div><div class="${cls}">${icon}</div></div>`);
+  }
+  const weekStart = shiftDate(t, monOff);
+  const stickerKey = 'water_' + weekStart;
+  const gotSticker = state.achievements[stickerKey];
+  const showSticker = points >= 6 && !gotSticker;
+
+  weekEl.innerHTML = `
+    <div class="water-week">${daysHtml.join('')}</div>
+    <div style="text-align:center;font-size:12px;color:var(--text-soft);margin-top:6px;">
+      📊 本周 ${points} / 7 天达标 ${points>=6?'🎉':points>=4?'💪':'🌱'}
+      ${showSticker ? `<br><button id="claimSticker" style="margin-top:6px;background:linear-gradient(135deg,var(--pink-4),var(--blue-3));color:#fff;border:none;padding:6px 18px;border-radius:16px;font-size:12px;cursor:pointer;">🎨 领取本周 SVT 贴纸</button>` : ''}
+      ${gotSticker ? `<br><span style="margin-top:4px;display:inline-block;font-size:13px;">🌟 已获得本周 SVT 贴纸</span>` : ''}
+    </div>`;
+
+  const claimBtn = document.getElementById('claimSticker');
+  if(claimBtn){
+    claimBtn.onclick = ()=>{
+      state.achievements[stickerKey] = true;
+      save(); renderWater();
+      // 奖励弹窗
+      document.getElementById('rewardIcon').textContent = '🌟';
+      document.getElementById('rewardTitle').textContent = 'SVT 贴纸 +1！';
+      document.getElementById('rewardSub').textContent = `本周喝水 ${points}/7 天达标 🎉`;
+      document.getElementById('rewardQuote').textContent = '👤 "一直到最后都要幸福吧" — SEVENTEEN';
+      document.getElementById('rewardClose').onclick = ()=>{
+        document.getElementById('rewardMask').style.display = 'none';
+        renderWater();
+      };
+      document.getElementById('rewardMask').style.display = 'flex';
+    };
+  }
 }
 
 /* —— 三大营养素进度 —— */
