@@ -2056,12 +2056,11 @@ document.querySelectorAll('.seg-mini').forEach(g=>{
 document.getElementById('aiEstimate').onclick = ()=>{
   const name = document.getElementById('mealName').value.trim();
   if(!name){ toast('先填食物名称 🌷'); return; }
-  const portion = +document.getElementById('mealPortion').value || 1;
   const est = estimateFood(name);
-  const kcal = Math.round(est.k * portion);
-  const protein = Math.round(est.p * portion * 10) / 10;
-  const carb = Math.round((est.c||0) * portion * 10) / 10;
-  const fat = Math.round((est.f||0) * portion * 10) / 10;
+  const kcal = Math.round(est.k);
+  const protein = Math.round(est.p * 10) / 10;
+  const carb = Math.round((est.c||0) * 10) / 10;
+  const fat = Math.round((est.f||0) * 10) / 10;
   document.getElementById('mealKcal').value = kcal;
   document.getElementById('mealProtein').value = protein;
   document.getElementById('estimateHint').dataset.carb = carb;
