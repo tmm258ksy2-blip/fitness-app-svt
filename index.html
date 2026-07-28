@@ -485,7 +485,7 @@
             <button data-w="100">+100ml</button>
             <button data-w="200">+200ml</button>
             <button data-w="500">+500ml</button>
-            <input id="waterCustom" type="number" inputmode="numeric" placeholder="自定" min="1"/>
+            <input id="waterCustom" type="number" inputmode="numeric" placeholder="ml" min="1"/>
             <button id="waterAddBtn" style="background:rgba(166,210,236,0.35);border-color:var(--blue-2);">➕</button>
           </div>
         </div>
@@ -643,32 +643,20 @@
     </div>
     <div style="font-size:12px;color:var(--text-soft);font-weight:600;margin-bottom:4px;">常吃食物 · 点一下快速填入</div>
     <div class="food-tags" id="foodTags"></div>
-    <div class="field"><label>食物名称 + 描述（如：一碗牛肉面 / 一个鸡蛋 / 炒青菜一小盘）</label><input id="mealName" placeholder="如：一碗牛肉面"/></div>
+    <div class="field"><label>食物名称 + 描述</label><input id="mealName" placeholder="如：一碗牛肉面 / 一个鸡蛋"/></div>
     <div class="row-2">
-      <div class="field"><label>份数 / 量级</label>
-        <select id="mealPortion">
-          <option value="0.5">半份</option>
-          <option value="1" selected>1 份</option>
-          <option value="1.5">1.5 份</option>
-          <option value="2">2 份</option>
-          <option value="3">大份</option>
-        </select>
-      </div>
+      <div class="field"><label>热量 (kcal)</label><input id="mealKcal" type="number" inputmode="decimal" placeholder="点AI估算自动填"/></div>
       <div class="field" style="display:flex;align-items:flex-end;">
         <button class="btn" id="aiEstimate" style="background:linear-gradient(135deg,var(--blue-2),var(--pink-3));padding:11px;">✨ AI 估算</button>
       </div>
     </div>
-    <div class="row-2">
-      <div class="field"><label>热量 (kcal) · 估算后自动填</label><input id="mealKcal" type="number" inputmode="decimal" placeholder="点 AI 估算"/></div>
-      <div class="field"><label>蛋白质 (g)</label><input id="mealProtein" type="number" inputmode="decimal" placeholder="自动填"/></div>
-    </div>
+    <div class="field"><label>蛋白质 (g)</label><input id="mealProtein" type="number" inputmode="decimal" placeholder="g"/></div>
     <div id="estimateHint" style="font-size:11px;color:var(--text-light);margin:-6px 0 10px;display:none;"></div>
     <button class="btn" id="saveMeal">保存</button>
   </div>
 </div>
 
 <!-- 模态：添加运动 -->
-<div class="modal-mask" id="m-workout">
   <div class="modal">
     <h2>添加运动 <button class="close" data-close="m-workout">×</button></h2>
     <div class="seg-mini" id="workoutType">
