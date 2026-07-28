@@ -233,10 +233,10 @@
   .water-bar-bg{height:14px;border-radius:8px;background:rgba(166,210,236,0.15);overflow:hidden;position:relative;}
   .water-bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#a6d2ec,#7fb8dc);transition:width .4s;}
   .water-bar-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-soft);}
-  .water-add{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0 2px;}
-  .water-add button{background:rgba(166,210,236,0.15);border:none;border-radius:10px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text-soft);font-weight:600;}
-  .water-add button:active{background:rgba(166,210,236,0.3);}
-  .water-add input{width:44px;border:none;border-radius:8px;padding:3px 6px;font-size:11px;background:rgba(255,255,255,0.5);outline:none;color:var(--text);text-align:center;}
+  .water-add{display:flex;gap:4px;margin:6px 0 2px;}
+  .water-add button{background:rgba(166,210,236,0.2);border:none;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text-soft);font-weight:600;}
+  .water-add button:active{background:rgba(166,210,236,0.35);}
+  .water-add input{width:60px;border:none;border-radius:6px;padding:3px 6px;font-size:11px;background:rgba(255,255,255,0.5);outline:none;color:var(--text);text-align:center;}
   .water-info{font-size:11px;color:var(--text-light);text-align:center;font-weight:600;white-space:nowrap;}
   .water-info b{color:var(--blue-2);font-size:14px;}
   /* 周打卡 */
@@ -482,11 +482,8 @@
         <div class="water-bar-wrap">
           <div class="water-bar-bg"><div class="water-bar-fill" id="waterFill" style="width:0%;"></div><div class="water-bar-text" id="waterLabel">0 / 2000 ml</div></div>
           <div class="water-add">
-            <button data-w="100">+100ml</button>
-            <button data-w="200">+200ml</button>
-            <button data-w="500">+500ml</button>
             <input id="waterCustom" type="number" inputmode="numeric" placeholder="ml" min="1"/>
-            <button id="waterAddBtn" style="background:rgba(166,210,236,0.35);border-color:var(--blue-2);">➕</button>
+            <button id="waterAddBtn" style="background:rgba(166,210,236,0.25);">➕</button>
           </div>
         </div>
         <div class="water-info" id="waterInfo"></div>
@@ -1279,15 +1276,7 @@ function renderWater(){
   document.getElementById('waterLabel').textContent = `${ml} / ${goal} ml`;
   document.getElementById('waterInfo').innerHTML = pct >= 100 ? '💧 达标!' : `<b>${Math.round(goal - ml)}</b> ml 还差`;
 
-  // 快速加水和自定义
-  document.querySelectorAll('[data-w]').forEach(btn => {
-    btn.onclick = () => {
-      state.water[t] = (state.water[t] || 0) + +btn.dataset.w;
-      if(state.water[t] > 5000) state.water[t] = 5000; // 上限
-      save(); renderWater(); renderStreak();
-      if(state.water[t] >= goal) toast('今日喝水达标 💧');
-    };
-  });
+  // 自定义加水
   document.getElementById('waterAddBtn').onclick = () => {
     const inp = document.getElementById('waterCustom');
     const v = +inp.value;
