@@ -2329,6 +2329,11 @@ function fetchInbox(){
         state.profile = {...(state.profile||{}), ...data.profile};
         count++;
       }
+      // 同步头像库（备份恢复用，只在 inbox 包含时同步）
+      if(data.avatars && Array.isArray(data.avatars)){
+        data.avatars.forEach((a,i)=>{ if(a && a.src) state.avatars[i] = a; });
+        count++;
+      }
       localStorage.setItem('fitSVT_inbox_ver', ver);
       save();
       render();
