@@ -1,15 +1,17 @@
 {
-  "version": 31,
+  "version": 32,
   "date": "2026-07-28",
   "meals": [
     {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
     {"type":"早餐","name":"小青菜包子一个","kcal":100,"protein":3,"carb":18,"fat":2},
     {"type":"早餐","name":"豆浆300ml","kcal":90,"protein":9,"carb":4,"fat":4},
-    {"type":"午餐","name":"打包盒菌菇炒肉浇头面","kcal":625,"protein":25,"carb":68,"fat":25}
+    {"type":"午餐","name":"打包盒菌菇炒肉浇头面","kcal":625,"protein":25,"carb":68,"fat":25},
+    {"type":"加餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6},
+    {"type":"加餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5}
   ],
   "workouts": [],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-28 午餐625kcal"
+  "note": "2026-07-28 加餐"
 }
