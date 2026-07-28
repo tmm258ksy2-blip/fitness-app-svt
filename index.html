@@ -2016,6 +2016,8 @@ document.querySelectorAll('.tab').forEach(t=>{
     document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
     document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+    // 切换 tab 时关闭所有弹窗
+    document.querySelectorAll('.modal-mask').forEach(m=>m.classList.remove('show'));
   };
 });
 
