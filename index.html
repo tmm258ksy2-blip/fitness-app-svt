@@ -346,10 +346,10 @@
   /* 模态 - 居中弹窗 */
   .modal-mask{
     position:fixed;inset:0;background:rgba(60,40,55,0.45);backdrop-filter:blur(6px);
-    display:none;align-items:center;justify-content:center;z-index:100;
+    display:none !important;align-items:center;justify-content:center;z-index:100;
     padding:20px;
   }
-  .modal-mask.show{display:flex;animation:fadeIn .2s;}
+  .modal-mask.show{display:flex !important;animation:fadeIn .2s;}
   .modal{
     background:linear-gradient(180deg,#fff8fb 0%, #fde6ee 100%);
     border-radius:18px;padding:18px 18px 22px;width:100%;max-width:380px;
