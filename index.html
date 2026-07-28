@@ -228,17 +228,13 @@
   .streak-bar .txt{font-size:12px;color:var(--text-soft);font-weight:600;}
 
   /* 喝水记录（ml版） */
-  .water-row{display:flex;align-items:center;gap:10px;}
+  .water-row{display:flex;align-items:center;gap:8px;}
   .water-bar-wrap{flex:1;min-width:0;}
   .water-bar-bg{height:14px;border-radius:8px;background:rgba(166,210,236,0.15);overflow:hidden;position:relative;}
   .water-bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#a6d2ec,#7fb8dc);transition:width .4s;}
-  .water-bar-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-soft);}
-  .water-add{display:flex;gap:4px;margin:6px 0 2px;}
-  .water-add button{background:rgba(166,210,236,0.2);border:none;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text-soft);font-weight:600;}
-  .water-add button:active{background:rgba(166,210,236,0.35);}
-  .water-add input{width:60px;border:none;border-radius:6px;padding:3px 6px;font-size:11px;background:rgba(255,255,255,0.5);outline:none;color:var(--text);text-align:center;}
-  .water-info{font-size:11px;color:var(--text-light);text-align:center;font-weight:600;white-space:nowrap;}
-  .water-info b{color:var(--blue-2);font-size:14px;}
+  .water-bar-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--text-soft);}
+  .water-info{font-size:11px;color:var(--text-light);text-align:center;font-weight:600;white-space:nowrap;flex-shrink:0;}
+  .water-info b{color:var(--blue-2);font-size:13px;}
   /* 周打卡 */
   .water-week{display:flex;justify-content:space-around;margin:8px 0 0;padding:8px 2px;border-radius:8px;background:rgba(255,255,255,0.35);}
   .water-week .ww-day{text-align:center;min-width:22px;}
@@ -478,14 +474,12 @@
     <div class="card">
       <h3><span class="dot"></span>喝水</h3>
       <div class="water-row">
-        <span style="font-size:22px;">💧</span>
+        <span style="font-size:20px;">💧</span>
         <div class="water-bar-wrap">
           <div class="water-bar-bg"><div class="water-bar-fill" id="waterFill" style="width:0%;"></div><div class="water-bar-text" id="waterLabel">0 / 2000 ml</div></div>
-          <div class="water-add">
-            <input id="waterCustom" type="number" inputmode="numeric" placeholder="ml" min="1"/>
-            <button id="waterAddBtn" style="background:rgba(166,210,236,0.25);">➕</button>
-          </div>
         </div>
+        <input id="waterCustom" type="number" inputmode="numeric" placeholder="ml" min="1" style="width:44px;border:none;border-radius:6px;padding:4px 6px;font-size:11px;background:rgba(255,255,255,0.5);outline:none;color:var(--text);text-align:center;flex-shrink:0;"/>
+        <button id="waterAddBtn" style="flex-shrink:0;background:rgba(166,210,236,0.2);border:none;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer;">➕</button>
         <div class="water-info" id="waterInfo"></div>
       </div>
       <div id="waterWeekScore"></div>
