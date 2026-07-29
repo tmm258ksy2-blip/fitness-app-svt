@@ -1,7 +1,9 @@
 {
-  "version": 34,
+  "version": 35,
   "date": "2026-07-29",
   "meals": [
+    {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
+    {"type":"早餐","name":"豆浆200ml","kcal":60,"protein":6,"carb":3,"fat":3},
     {"type":"午餐","name":"干蒸鲜排骨","kcal":145,"protein":11,"carb":4,"fat":8},
     {"type":"午餐","name":"白灼罗马生菜","kcal":17,"protein":1,"carb":3,"fat":0},
     {"type":"午餐","name":"顺德鲜肉肠粉1/3条","kcal":48,"protein":2,"carb":6,"fat":2},
@@ -12,5 +14,5 @@
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-29 午餐·有记广州菜"
+  "note": "2026-07-29 早餐+午餐"
 }

@@ -2309,8 +2309,29 @@ function fetchInbox(){
           console.log('[inbox] 已清除今天被错误写入的', before, '条记录');
         }
       }
-      if(data.meals){ state.meals[t] = []; data.meals.forEach(m => { state.meals[t].push({id:uid(), ts:Date.now(), ...m}); count++; }); }
-      if(data.workouts){ state.workouts[t] = []; data.workouts.forEach(w => { state.workouts[t].push({id:uid(), ts:Date.now(), ...w}); count++; }); }
+      // 同步饮食和运动：合并而非覆盖，保留用户手动输入的记录
+      if(data.meals){ 
+        const existingKeys = new Set((state.meals[t]||[]).map(m => m.name+'|'+m.type));
+        data.meals.forEach(m => { 
+          const key = (m.name||'') + '|' + (m.type||'');
+          if(!existingKeys.has(key)){
+            state.meals[t] = state.meals[t] || [];
+            state.meals[t].push({id:uid(), ts:Date.now(), ...m}); 
+            count++;
+          }
+        }); 
+      }
+      if(data.workouts){ 
+        const existingKeys = new Set((state.workouts[t]||[]).map(w => w.name+'|'+w.type));
+        data.workouts.forEach(w => { 
+          const key = (w.name||'') + '|' + (w.type||'');
+          if(!existingKeys.has(key)){
+            state.workouts[t] = state.workouts[t] || [];
+            state.workouts[t].push({id:uid(), ts:Date.now(), ...w}); 
+            count++;
+          }
+        }); 
+      }
       if(data.weight){
         state.weights = state.weights.filter(x=>x.date!==t);
         state.weights.push({date:t, kg:+data.weight, ts:Date.now()});
