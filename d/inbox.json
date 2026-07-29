@@ -1,5 +1,5 @@
 {
-  "version": 36,
+  "version": 37,
   "date": "2026-07-29",
   "meals": [
     {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
@@ -13,9 +13,11 @@
     {"type":"晚餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5},
     {"type":"晚餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6}
   ],
-  "workouts": [],
+  "workouts": [
+    {"type":"快走","name":"散步","min":30,"kcal":83}
+  ],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-29 晚餐"
+  "note": "2026-07-29 散步30min"
 }
