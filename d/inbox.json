@@ -1,5 +1,5 @@
 {
-  "version": 35,
+  "version": 36,
   "date": "2026-07-29",
   "meals": [
     {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
@@ -8,11 +8,14 @@
     {"type":"午餐","name":"白灼罗马生菜","kcal":17,"protein":1,"carb":3,"fat":0},
     {"type":"午餐","name":"顺德鲜肉肠粉1/3条","kcal":48,"protein":2,"carb":6,"fat":2},
     {"type":"午餐","name":"萝卜丝炒牛肉","kcal":260,"protein":17,"carb":8,"fat":16},
-    {"type":"午餐","name":"五常米饭一碗","kcal":200,"protein":5,"carb":45,"fat":1}
+    {"type":"午餐","name":"五常米饭一碗","kcal":200,"protein":5,"carb":45,"fat":1},
+    {"type":"晚餐","name":"牛肉三两","kcal":190,"protein":35,"carb":1,"fat":5},
+    {"type":"晚餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5},
+    {"type":"晚餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6}
   ],
   "workouts": [],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-29 早餐+午餐"
+  "note": "2026-07-29 晚餐"
 }
