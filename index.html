@@ -974,6 +974,18 @@ const WORKOUT_PLANS = {
   }
 };
 
+/* —— 视频周轮换池（每周一自动换下一组） —— */
+// 每个训练日配2-4个候选视频 [[bv,title],...] 按周号轮换
+const WEEKLY_VIDEOS = {
+  1:[["BV1mkg16qEzW","晨间舒展拉伸"],["BV1ga411w7i3","帕梅拉全身拉伸"]],
+  2:[["BV1VhMg63E2K","帕梅拉肩颈放松"],["BV1vu411e7fC","10分钟缓解肩颈酸痛"]],
+  3:[["BV1vu411e7fC","10分钟缓解肩颈酸痛"],["BV1mkg16qEzW","晨间舒展拉伸"]],
+  4:[["BV14a4y1W76f","帕梅拉15min上肢"],["BV1bP4y1M7bn","帕梅拉10min上肢+负重"]],
+  5:[["BV1Dtgr6hEeV","居家臀部(上臀无器械)"],["BV1Dtgr6hEeV","居家臀部无器械2"]],
+  6:[["BV1bP4y1M7bn","帕梅拉10min上肢+负重"],["BV14a4y1W76f","帕梅拉15min上肢"]],
+  0:[["BV1YN8wzXEt8","帕梅拉燃腹"],["BV1Xt421J7yW","HIIT全身燃脂"]]
+};
+
 const MEAL_PLANS = [
   { // 方案A：高蛋白低碳
     name:'高蛋白低碳日', icon:'🥗',
@@ -1672,6 +1684,10 @@ function renderWorkoutPlan(){
   const plan = WORKOUT_PLANS[day];
   if(!plan) return;
   const tomorrow = WORKOUT_PLANS[(day+1) % 7];
+  // 视频周轮换：每周一自动换下一组视频
+  var weekNum = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,1)) / 86400000 / 7) + 1;
+  if(WEEKLY_VIDEOS[day]){ var pick = WEEKLY_VIDEOS[day][weekNum % WEEKLY_VIDEOS[day].length]; plan.video = pick[0]; plan.videoTitle = pick[1]; }
+  if(WEEKLY_VIDEOS[(day+1)%7]){ var pick2 = WEEKLY_VIDEOS[(day+1)%7][weekNum % WEEKLY_VIDEOS[(day+1)%7].length]; tomorrow.video = pick2[0]; tomorrow.videoTitle = pick2[1]; }
   const el = document.getElementById('workoutPlanContent');
   el.innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
