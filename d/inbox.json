@@ -1,5 +1,5 @@
 {
-  "version": 43,
+  "version": 44,
   "date": "2026-07-30",
   "meals": [
     {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
@@ -9,9 +9,11 @@
     {"type":"晚餐","name":"白吉饼夹辣椒炒蛋","kcal":270,"protein":11,"carb":39,"fat":11},
     {"type":"晚餐","name":"大盘鸡拌面几口","kcal":150,"protein":8,"carb":15,"fat":5}
   ],
-  "workouts": [],
+  "workouts": [
+    {"type":"力量训练","name":"上肢力量训练","min":31,"kcal":130}
+  ],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-30 修正为白吉饼大小"
+  "note": "2026-07-30 上肢训练31min"
 }
