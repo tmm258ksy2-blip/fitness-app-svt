@@ -1,17 +1,17 @@
 {
-  "version": 42,
+  "version": 43,
   "date": "2026-07-30",
   "meals": [
     {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
     {"type":"午餐","name":"麻食一碗（中等碗）","kcal":700,"protein":25,"carb":115,"fat":16},
     {"type":"晚餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6},
     {"type":"晚餐","name":"80%肉肠两根","kcal":160,"protein":16,"carb":4,"fat":10},
-    {"type":"晚餐","name":"锅盔馍夹辣椒炒蛋","kcal":370,"protein":13,"carb":52,"fat":11},
+    {"type":"晚餐","name":"白吉饼夹辣椒炒蛋","kcal":270,"protein":11,"carb":39,"fat":11},
     {"type":"晚餐","name":"大盘鸡拌面几口","kcal":150,"protein":8,"carb":15,"fat":5}
   ],
   "workouts": [],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-30 修正锅盔馍热量"
+  "note": "2026-07-30 修正为白吉饼大小"
 }
