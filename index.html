@@ -1587,7 +1587,11 @@ function renderAdvice(eat, burn, min, protein, target){
     ? '有进步空间，但别焦虑，明天调整一下就好'
     : '今天稍微放飞了一下，没关系，明天重新开始 SVT 都在陪你';
 
+  // 自定义建议（来自 inbox 同步）
+  const custom = (state.advice||{})[t];
+
   el.innerHTML = `
+    ${custom ? `<div style="margin-bottom:10px;padding:10px 12px;border-radius:10px;background:rgba(255,138,171,0.1);font-size:12px;line-height:1.7;color:var(--text);"><b>📝 用餐点评</b><br>${custom}</div>` : ''}
     ${pros.length ? `<div class="pros"><span class="tag-pro">优点</span>${pros.join('；')}</div>` : ''}
     ${cons.length ? `<div class="cons"><span class="tag-con">可改进</span>${cons.join('；')}</div>` : ''}
     <div class="summary">综合 ${score} 分 · ${msg}</div>
@@ -2369,6 +2373,12 @@ function fetchInbox(){
       // 同步头像库（备份恢复用，只在 inbox 包含时同步）
       if(data.avatars && Array.isArray(data.avatars)){
         data.avatars.forEach((a,i)=>{ if(a && a.src) state.avatars[i] = a; });
+        count++;
+      }
+      // 同步自定义建议（点评写入今日小建议）
+      if(data.customAdvice){
+        state.advice = state.advice || {};
+        state.advice[t] = data.customAdvice;
         count++;
       }
       localStorage.setItem('fitSVT_inbox_ver', ver);

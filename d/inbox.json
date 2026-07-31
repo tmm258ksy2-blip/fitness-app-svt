@@ -1,6 +1,7 @@
 {
-  "version": 45,
+  "version": 46,
   "date": "2026-07-31",
+  "customAdvice": "✅ 蛋白搭配很聪明（蛋+酸奶+豆腐皮=18g）<br>⚠️ 碳水偏高（画卷+粉条=29g碳水），早餐碳水偏多容易困<br>💡 画卷留着上午加餐吃，比一次性吃完更扛饿；今天还差68g蛋白，午餐多吃肉蛋类",
   "meals": [
     {"type":"早餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5},
     {"type":"早餐","name":"菌菇两块","kcal":10,"protein":1,"carb":2,"fat":0},
@@ -13,5 +14,5 @@
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-31 早餐"
+  "note": "2026-07-31 早餐+点评"
 }
