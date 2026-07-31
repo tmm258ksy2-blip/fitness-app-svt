@@ -812,6 +812,7 @@ const defaultState = ()=>({
   achievements:{},     // {achievementId: true}
   avatars:[],          // 头像库 [{name, src}] 空数组时用默认 svt.jpg
   stickers:[],         // 收集的 SVT 贴纸 [{id, name, emoji, color, rarity, earnedAt}]
+  advice:{},           // {date: customAdvice} 自定义每日建议
   meta:{created:today()}
 });
 let state = load();
