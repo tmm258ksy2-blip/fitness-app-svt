@@ -834,7 +834,25 @@ function load(){
     };
   }catch(e){ return defaultState(); }
 }
-function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+function save(){
+  try{
+    // 头像 base64 太大，localStorage 存不下，剥出来另存 IndexedDB
+    var st = JSON.parse(JSON.stringify(state));
+    if(st.avatars){ st.avatars = st.avatars.map(function(a){ return a ? {name:a.name} : null; }); }
+    localStorage.setItem(STORE_KEY, JSON.stringify(st));
+  }catch(e){
+    console.error('save failed:', e);
+    // 兜底：只保存不含头像的 state
+    try{
+      var minimal = JSON.parse(JSON.stringify(state));
+      delete minimal.avatars;
+      minimal._avatarBackup = true;
+      localStorage.setItem(STORE_KEY, JSON.stringify(minimal));
+    }catch(e2){ console.error('save minimal failed:', e2); }
+  }
+  // 头像完整数据存 IndexedDB
+  backupAvatarsToDB();
+}
 
 /* —— 内置食物热量估算库（每份基准 kcal/蛋白 g）—— */
 /* —— SEVENTEEN 歌曲库（B 站资源，国内可直接播放，BV 号均已校验）—— */
@@ -2556,21 +2574,21 @@ function restoreAvatarsFromDB(){
 
 function renderAvatar(){
   const el = document.getElementById('avatar');
-  const all = (state.avatars||[]);
-  const filled = all.filter(a=>a && a.src);
-  if(filled.length === 0){
-    // 没上传任何头像，用默认团体图
-    el.style.backgroundImage = 'url("assets/svt.jpg")';
-    return;
-  }
-  // 按日期轮换：单人先轮，一轮结束后用全员合照
-  // 槽位 0 = 全员合照，排在最后；其余单人按顺序轮
-  const group = filled.filter((a,i) => i===0);   // 全员合照（槽位0）
-  const singles = filled.filter((a,i) => i!==0);  // 其余单人
-  const seq = singles.concat(group);             // 单人在前，合照在末尾
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
-  const idx = dayOfYear % seq.length;
-  el.style.backgroundImage = `url("${seq[idx].src}")`;
+  // 优先从 IndexedDB 拉取完整头像（含 src，localStorage 只存了 name 防溢出）
+  restoreAvatarsFromDB().then(function(backup){
+    var avatars = (backup && backup.length > 0) ? backup : (state.avatars||[]);
+    var filled = avatars.filter(function(a){ return a && a.src; });
+    if(filled.length === 0){
+      el.style.backgroundImage = 'url("assets/svt.jpg")';
+      return;
+    }
+    var group = filled.filter(function(a,i){ return i===0; });
+    var singles = filled.filter(function(a,i){ return i!==0; });
+    var seq = singles.concat(group);
+    var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+    var idx = dayOfYear % seq.length;
+    el.style.backgroundImage = 'url("' + seq[idx].src + '")';
+  });
 }
 // 头像点击 = 打开头像库
 document.getElementById('avatar').onclick = ()=>{
