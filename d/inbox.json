@@ -1,19 +1,17 @@
 {
-  "version": 44,
-  "date": "2026-07-30",
+  "version": 45,
+  "date": "2026-07-31",
   "meals": [
-    {"type":"早餐","name":"鸡蛋两个","kcal":150,"protein":12,"carb":1,"fat":10},
-    {"type":"午餐","name":"麻食一碗（中等碗）","kcal":700,"protein":25,"carb":115,"fat":16},
-    {"type":"晚餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6},
-    {"type":"晚餐","name":"80%肉肠两根","kcal":160,"protein":16,"carb":4,"fat":10},
-    {"type":"晚餐","name":"白吉饼夹辣椒炒蛋","kcal":270,"protein":11,"carb":39,"fat":11},
-    {"type":"晚餐","name":"大盘鸡拌面几口","kcal":150,"protein":8,"carb":15,"fat":5}
+    {"type":"早餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5},
+    {"type":"早餐","name":"菌菇两块","kcal":10,"protein":1,"carb":2,"fat":0},
+    {"type":"早餐","name":"粉条一点","kcal":30,"protein":0,"carb":7,"fat":0},
+    {"type":"早餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6},
+    {"type":"早餐","name":"画卷半个手掌大","kcal":100,"protein":3,"carb":22,"fat":1},
+    {"type":"早餐","name":"豆腐皮一块","kcal":80,"protein":6,"carb":1,"fat":4}
   ],
-  "workouts": [
-    {"type":"力量训练","name":"上肢力量训练","min":31,"kcal":130}
-  ],
+  "workouts": [],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-30 上肢训练31min"
+  "note": "2026-07-31 早餐"
 }
