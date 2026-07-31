@@ -1,7 +1,7 @@
 {
-  "version": 47,
+  "version": 48,
   "date": "2026-07-31",
-  "customAdvice": "✅ 热量控制很严格，晚餐160kcal轻盈<br>⚠️ 蛋白只有6g偏低，午餐如果也没吃肉蛋白可能不足<br>💡 明天早餐多加1个鸡蛋，午餐选牛肉/鸡肉类",
+  "customAdvice": "⚠️ 蛋白偏少46g（目标90g），晚餐蛋+黄瓜+甜瓜加起来才6g蛋白<br>✅ 热量控制优秀1133/1500，碳水早餐多但午餐面片正好<br>💡 明天早餐必须加蛋白：2个蛋+酸奶=保证30g",
   "meals": [
     {"type":"早餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5},
     {"type":"早餐","name":"菌菇两块","kcal":10,"protein":1,"carb":2,"fat":0},
@@ -9,6 +9,8 @@
     {"type":"早餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6},
     {"type":"早餐","name":"画卷半个手掌大","kcal":100,"protein":3,"carb":22,"fat":1},
     {"type":"早餐","name":"豆腐皮一块","kcal":80,"protein":6,"carb":1,"fat":4},
+    {"type":"午餐","name":"手擀揪面片（碗15×5cm）","kcal":370,"protein":10,"carb":72,"fat":6},
+    {"type":"午餐","name":"配菜豆芽土豆肉","kcal":200,"protein":10,"carb":16,"fat":6},
     {"type":"晚餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5},
     {"type":"晚餐","name":"黄瓜一根","kcal":30,"protein":0,"carb":6,"fat":0},
     {"type":"晚餐","name":"甜瓜半个","kcal":55,"protein":1,"carb":13,"fat":0}
@@ -17,5 +19,5 @@
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-07-31 晚餐"
+  "note": "2026-07-31 午餐+晚餐"
 }
