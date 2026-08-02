@@ -1384,7 +1384,7 @@ function renderWater(){
     const isToday = i === 0;
     const cls = done ? 'ww-dot done' : (isToday ? 'ww-dot today' : 'ww-dot');
     const icon = done ? '✅' : (isToday ? '💧' : '');
-    daysHtml.push(`<div class="ww-day"><div class="ww-label">${dayNames[(i+7)%7]}</div><div class="${cls}">${icon}</div></div>`);
+    daysHtml.push(`<div class="ww-day"><div class="ww-label">${dayNames[(i-monOff)%7]}</div><div class="${cls}">${icon}</div></div>`);
   }
   const weekStart = shiftDate(t, monOff);
   const stickerKey = 'water_' + weekStart;
