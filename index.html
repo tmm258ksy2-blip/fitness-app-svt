@@ -1462,7 +1462,8 @@ function checkAchievements(){
   const totalMeals = Object.values(state.meals).reduce((s,a)=>s+a.length,0);
   const totalWorkouts = Object.values(state.workouts).reduce((s,a)=>s+a.length,0);
   const startW = +state.goals.startW;
-  const curW = state.weights.length ? state.weights[state.weights.length-1].kg : startW;
+  const sorted = state.weights.slice().sort((a,b)=>a.ts-b.ts);
+  const curW = sorted.length ? sorted[sorted.length-1].kg : startW;
   const drop = startW ? Math.max(startW - curW, 0) : 0;
   const createdDays = Math.floor((Date.now() - new Date(state.meta?.created||today()).getTime()) / 86400000) + 1;
   // 统计蛋白质达标天数
