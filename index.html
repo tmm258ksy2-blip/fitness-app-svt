@@ -2516,11 +2516,12 @@ function openAvatarInput(idx){
       if(!f) return;
       if(f.size > 2*1024*1024){ toast('图片太大，请选 2MB 以内的'); return; }
       const reader = new FileReader();
-      reader.onload = ()=>{
+      reader.onload = async ()=>{
         if(!state.avatars) state.avatars = [];
         state.avatars[idx] = {name:slot.label, src:reader.result};
-        save(); renderAvatarGrid(); renderAvatar();
-        backupAvatarsToDB();
+        save(); renderAvatarGrid();
+        await backupAvatarsToDB();
+        renderAvatar();
         toast(slot.label + ' 已设置');
       };
       reader.readAsDataURL(f);
@@ -2530,23 +2531,27 @@ function openAvatarInput(idx){
     if(!/^https?:\/\//.test(url)){ toast('请输入完整的图片链接(以 http 开头)'); return; }
     if(!state.avatars) state.avatars = [];
     state.avatars[idx] = {name:slot.label, src:url};
-    save(); renderAvatarGrid(); renderAvatar();
-    backupAvatarsToDB();
+    save(); renderAvatarGrid();
+    backupAvatarsToDB().then(()=>renderAvatar());
     toast(slot.label + ' 已设置');
   }
 }
 
 /* —— 头像 IndexedDB 备份（iOS localStorage 不稳定）—— */
 function backupAvatarsToDB(){
-  if(!state.avatars || !state.avatars.length) return;
-  try{
-    const req = indexedDB.open("fitSVT_avatars", 1);
-    req.onupgradeneeded = (e)=>{ e.target.result.createObjectStore("avatars"); };
-    req.onsuccess = (e)=>{
-      const tx = e.target.result.transaction("avatars", "readwrite");
-      tx.objectStore("avatars").put(JSON.parse(JSON.stringify(state.avatars)), "all");
-    };
-  }catch(e){ console.log("avatar backup failed", e); }
+  return new Promise((resolve)=>{
+    if(!state.avatars || !state.avatars.length) return resolve();
+    try{
+      const req = indexedDB.open("fitSVT_avatars", 1);
+      req.onupgradeneeded = (e)=>{ e.target.result.createObjectStore("avatars"); };
+      req.onsuccess = (e)=>{
+        const tx = e.target.result.transaction("avatars", "readwrite");
+        tx.objectStore("avatars").put(JSON.parse(JSON.stringify(state.avatars)), "all");
+        tx.oncomplete = ()=>resolve();
+      };
+      req.onerror = ()=>resolve();
+    }catch(e){ resolve(); }
+  });
 }
 function restoreAvatarsFromDB(){
   return new Promise((resolve)=>{
@@ -2574,21 +2579,30 @@ function restoreAvatarsFromDB(){
 
 function renderAvatar(){
   const el = document.getElementById('avatar');
-  // 优先从 IndexedDB 拉取完整头像（含 src，localStorage 只存了 name 防溢出）
-  restoreAvatarsFromDB().then(function(backup){
-    var avatars = (backup && backup.length > 0) ? backup : (state.avatars||[]);
-    var filled = avatars.filter(function(a){ return a && a.src; });
-    if(filled.length === 0){
-      el.style.backgroundImage = 'url("assets/svt.jpg")';
-      return;
-    }
-    var group = filled.filter(function(a,i){ return i===0; });
-    var singles = filled.filter(function(a,i){ return i!==0; });
-    var seq = singles.concat(group);
-    var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
-    var idx = dayOfYear % seq.length;
-    el.style.backgroundImage = 'url("' + seq[idx].src + '")';
-  });
+  // 先用内存 state（有 src），IndexedDB 异步可能没写完
+  var avatars = (state.avatars||[]);
+  var filled = avatars.filter(function(a){ return a && a.src; });
+  if(filled.length > 0){
+    setAvatar(el, filled);
+  } else {
+    restoreAvatarsFromDB().then(function(backup){
+      var dbAvatars = (backup && backup.length > 0) ? backup : [];
+      var dbFilled = dbAvatars.filter(function(a){ return a && a.src; });
+      if(dbFilled.length === 0){
+        el.style.backgroundImage = 'url("assets/svt.jpg")';
+        return;
+      }
+      setAvatar(el, dbFilled);
+    });
+  }
+}
+function setAvatar(el, filled){
+  var group = filled.filter(function(a,i){ return i===0; });
+  var singles = filled.filter(function(a,i){ return i!==0; });
+  var seq = singles.concat(group);
+  var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  var idx = dayOfYear % seq.length;
+  el.style.backgroundImage = 'url("' + seq[idx].src + '")';
 }
 // 头像点击 = 打开头像库
 document.getElementById('avatar').onclick = ()=>{
