@@ -1,15 +1,23 @@
 {
-  "version": 49,
+  "version": 50,
   "date": "2026-08-02",
-  "customAdvice": "✅ 早餐搭配不错，酸奶+蛋蛋白充足<br>💡 一口馍夹肉控制得好，没整个吃掉就是胜利<br>⚠️ 今天记得午餐多吃肉蛋类补蛋白",
+  "customAdvice": "⚠️ 晚餐碳水偏高（馒头+花卷+中午麻食），蛋白71/90g略差<br>✅ 运动52min超额完成，净摄入1253达标<br>💡 明天早餐必须2蛋起步补蛋白",
   "meals": [
     {"type":"早餐","name":"鸡蛋一个","kcal":75,"protein":6,"carb":1,"fat":5},
     {"type":"早餐","name":"一口馍夹肉","kcal":70,"protein":4,"carb":10,"fat":3},
-    {"type":"早餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6}
+    {"type":"早餐","name":"如实酸奶一杯","kcal":108,"protein":6,"carb":7,"fat":6},
+    {"type":"午餐","name":"麻食+豆腐木耳青菜","kcal":550,"protein":24,"carb":68,"fat":10},
+    {"type":"晚餐","name":"馒头一个","kcal":220,"protein":7,"carb":44,"fat":2},
+    {"type":"晚餐","name":"花卷半个","kcal":130,"protein":4,"carb":24,"fat":3},
+    {"type":"晚餐","name":"蒜苔炒肉","kcal":150,"protein":12,"carb":5,"fat":9},
+    {"type":"晚餐","name":"辣椒炒鸡蛋","kcal":130,"protein":8,"carb":2,"fat":8}
   ],
-  "workouts": [],
+  "workouts": [
+    {"type":"快走","name":"散步","min":30,"kcal":83},
+    {"type":"力量训练","name":"臀腿训练(热身+跟练+松解)","min":22,"kcal":97}
+  ],
   "weight": null,
   "goals": {"startW": 66, "targetW": 58, "cal": 1500, "exerciseMin": 30},
   "profile": {"weight": 66, "height": 170, "age": 33, "gender": "female", "note": "产后5年"},
-  "note": "2026-08-02 早餐"
+  "note": "2026-08-02 完整"
 }
